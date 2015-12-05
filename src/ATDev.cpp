@@ -1,51 +1,33 @@
 
-#include<SIM5218.h>
+#include<ATDev.h>
 
 
-SIM5218_sms::cleanUp()
-{
-    memset(m_number, 0, SIM5218_NUM_SIZE + 1);
-    memset(m_message, 0, SIM5218_SMS_SIZE + 1);
-}
-
-
-SIM5218_gps::cleanUp()
-{
-    memset(m_latitude, 0, SIM5218_LATITUDE_SIZE + 1);
-    memset(m_longitude, 0, SIM5218_LONGITUDE_SIZE + 1);
-    memset(m_altitude, 0, SIM5218_ALTITUDE_SIZE + 1);
-    memset(m_speed, 0, SIM5218_SPEED_SIZE + 1);
-
-    m_latPos    = 0x00;
-    m_longPos   = 0x00;
-}
-
-SIM5218::SIM5218()
+ATDev::ATDev()
 {
     memset(m_endBuffer, 0, SIM5218_BUFF_END_SIZE + 1);
     memset(m_cmdBuffer, 0, SIM5218_BUFF_CMD_SIZE + 1);
     memset(m_msgBuffer, 0, SIM5218_BUFF_MSG_SIZE + 1);
 
-    m_msgCount      = 0;
-    m_endCount      = 0;
-    m_timeOutMillis = 0;
+    m_msgCount      ^= m_msgCount;
+    m_endCount      ^= m_endCount;
+    m_timeOutMillis ^= m_timeOutMillis;
 
     m_isGPS         = false;
 }
 
-SIM5218::~SIM5218()
+ATDev::~ATDev()
 {
 
 }
 
-uint8_t SIM5218::sendATCmd(bool defaultEnd, uint8_t timeOut)
+uint8_t ATDev::sendATCmd(bool defaultEnd, uint8_t timeOut)
 {
     // init Buffer
     memset(m_cmdBuffer, 0, SIM5218_BUFF_CMD_SIZE + 1);
     memset(m_msgBuffer, 0, SIM5218_BUFF_MSG_SIZE + 1);
 
     // init Counter
-    m_msgCount = 0;
+    m_msgCount ^= m_msgCount;
     
     // is it the default AT end or had his own end?
     if (defaultEnd) {
