@@ -32,6 +32,7 @@
 // possible ends of AT command
 #define SIM5218_END_OK PSTR("OK\x0D\x0A")
 #define SIM5218_END_ERROR PSTR("ERROR\x0D\x0A")
+#define SIM5218_END_ERROR_SIZE 7
 
 // buffer size
 // the real size is SIZE+1 for char buffer
@@ -54,9 +55,8 @@
 #define SIM5218_ERR_UNEXPECTED_RESULT 0x03
 #define SIM5218_ERR_TIMEOUT 0x04
 #define SIM5218_ERR_NO_DATA 0x05
-#define SIM5218_ERR_UNEXPECTED_EOD 0x06
-#define SIM5218_ERR_GPS_CONNECT 0x07
-#define SIM5218_ERR_GPS_NOT_INIT 0x08
+#define SIM5218_ERR_GPS_CONNECT 0x06
+#define SIM5218_ERR_GPS_NOT_INIT 0x07
 
 // Time-Outs
 #define SIM5218_DEFAULT_AT_TIMEOUT 2500
@@ -135,6 +135,12 @@ class SIM5218
         /** AT CMD Buffer counter */
         uint16_t m_msgCount;
 
+        /** Size of end string. Used in sendATCmd */
+        uint8_t m_endCount;
+
+        /** Timeout status */
+        uint16_t m_timeOutMillis;
+
 
         // status
         bool m_isGPS;
@@ -143,7 +149,7 @@ class SIM5218
          *
          *
          */
-        uint8_t sendATCmd(bool defaultEnd, uint16_t timeout);
+        uint8_t sendATCmd(bool defaultEnd, uint8_t timeOut);
 
         /**
          *
