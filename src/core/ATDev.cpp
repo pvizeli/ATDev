@@ -15,7 +15,7 @@ ATDev::ATDev()
     m_timeOutMillis ^= m_timeOutMillis;
 }
 
-uint8_t ATDev::sendATCmd(bool defaultEnd, uint8_t timeOut)
+uint8_t ATDev::sendATCmd(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT, bool defaultEnd = true)
 {
     // UART initialize?
     if (m_hwSerial == NULL) {

@@ -67,18 +67,18 @@ class IGPS
          *
          *
          */
-        virtual uint8_t onGPS() = 0;
+        virtual uint8_t onGPS(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT) = 0;
 
         /**
          *
          *
          */
-        virtual uint8_t offGPS();
+        virtual uint8_t offGPS(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT) = 0;
 
         /**
          *
          */
-        virtual uint8_t receiveGPS();
+        virtual uint8_t receiveGPS(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT) = 0;
 }
 
 #endif

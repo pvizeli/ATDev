@@ -1,6 +1,6 @@
 
-#ifndef ATSMS_H
-#define ATSMS_H
+#ifndef ATEASYSMS_H
+#define ATEASYSMS_H
 
 // includes
 #include "ATDev.h"
@@ -17,7 +17,7 @@
 /**
  * Default AT SMS command handle object
  */
-class ATSms : public ISMS, public virtual ATDev
+class ATEasySMS : public ISMS, public virtual ATDev
 {
 
     public:

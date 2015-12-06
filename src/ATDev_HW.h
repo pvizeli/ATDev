@@ -6,12 +6,11 @@
 #include "core/ATDev.h"
 
 // interface
-#include "core/IDevice.h"
 #include "core/ISMS.h"
 #include "core/IGPS.h"
 
 // implementation
-#include "core/ATSms.h"
+#include "core/ATEasySMS.h"
 
 // Hardware
 #include "hardware/SIM5218.h"

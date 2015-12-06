@@ -47,7 +47,7 @@
 #define ATDEV_NETSTAT_REGISTERED 0x05
 
 // Time-Outs
-#define ATDEV_DEFAULT_AT_TIMEOUT 2500
+#define ATDEV_DEFAULT_TIMEOUT 2500
 
 /**
  * Object for handle all communication with ATDEV chip
@@ -83,34 +83,28 @@ class ATDev
          *
          *
          */
-        uint8_t sendATCmd(bool defaultEnd, uint8_t timeOut);
-
-        /**
-         *
-         *
-         */
-        uint8_t sendATCmd() {
-            return this->sendATCmd(true, ATDEV_DEFAULT_AT_TIMEOUT);
-        }
+        uint8_t sendATCmd(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT, bool defaultEnd = true);
 
     public:
 
-        /**
-         *
-         *
-         */
-        bool isReady();
-
-        /**
-         *
-         */
-        uint8_t setSIMPin();
+        uint8_t initialize(HardwareSerial *UART, uint8_t baudrate, uint8_t onPinMod);
 
         /**
          *
          *
          */
-        uint8_t getNetworkStatus();
+        bool isReady(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+
+        /**
+         *
+         */
+        uint8_t setSIMPin(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+
+        /**
+         *
+         *
+         */
+        uint8_t getNetworkStatus(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
 }
 
 #endif
