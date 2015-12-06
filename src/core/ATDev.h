@@ -3,7 +3,8 @@
 #define ATDEV_H
 
 // includes
-#include<Arduino.h>
+#include <Arduino.h>
+#include <inttypes.h>
 
 // chars
 #define ATDEV_CR 0x0D
@@ -32,6 +33,18 @@
 #define ATDEV_ERR_UNEXPECTED_RESULT 0x03
 #define ATDEV_ERR_TIMEOUT 0x04
 #define ATDEV_ERR_NO_DATA 0x05
+#define ATDEV_ERR_INITIALIZE 0x06
+
+// OK
+#define ATDEV_OK 0x00
+
+// Network status
+#define ATDEV_NETSTAT_UNKNOWN 0x00
+#define ATDEV_NETSTAT_DENIED 0x01
+#define ATDEV_NETSTAT_NOT_REGISTERED 0x02
+#define ATDEV_NETSTAT_SEARCHING 0x03
+#define ATDEV_NETSTAT_ROAMING 0x04
+#define ATDEV_NETSTAT_REGISTERED 0x05
 
 // Time-Outs
 #define ATDEV_DEFAULT_AT_TIMEOUT 2500
@@ -42,9 +55,11 @@
 class ATDev
 {
     ATDev();
-    ~ATDev();
 
     protected:
+
+        /** UART inteface for communication with device */
+        HardwareSerial* m_hwSerial;
 
         /** Buffer for prepare AT commands they will send */
         char m_cmdBuffer[ATDEV_BUFF_CMD_SIZE + 1];
@@ -89,13 +104,13 @@ class ATDev
         /**
          *
          */
-        uint8_t setPin();
+        uint8_t setSIMPin();
 
         /**
          *
          *
          */
-        uint8_t isReg();
+        uint8_t getNetworkStatus();
 }
 
 #endif

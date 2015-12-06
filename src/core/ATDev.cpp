@@ -1,30 +1,30 @@
 
-#include<ATDev.h>
+#include "ATDev.h"
 
 
 ATDev::ATDev()
 {
-    memset(m_endBuffer, 0, SIM5218_BUFF_END_SIZE + 1);
-    memset(m_cmdBuffer, 0, SIM5218_BUFF_CMD_SIZE + 1);
-    memset(m_msgBuffer, 0, SIM5218_BUFF_MSG_SIZE + 1);
+    m_hwSerial      = NULL;
+
+    memset(m_endBuffer, 0, ATDEV_BUFF_END_SIZE + 1);
+    memset(m_cmdBuffer, 0, ATDEV_BUFF_CMD_SIZE + 1);
+    memset(m_msgBuffer, 0, ATDEV_BUFF_MSG_SIZE + 1);
 
     m_msgCount      ^= m_msgCount;
     m_endCount      ^= m_endCount;
     m_timeOutMillis ^= m_timeOutMillis;
-
-    m_isGPS         = false;
-}
-
-ATDev::~ATDev()
-{
-
 }
 
 uint8_t ATDev::sendATCmd(bool defaultEnd, uint8_t timeOut)
 {
+    // UART initialize?
+    if (m_hwSerial == NULL) {
+        return ATDEV_ERR_INITIALIZE;
+    }
+
     // init Buffer
-    memset(m_cmdBuffer, 0, SIM5218_BUFF_CMD_SIZE + 1);
-    memset(m_msgBuffer, 0, SIM5218_BUFF_MSG_SIZE + 1);
+    memset(m_cmdBuffer, 0, ATDEV_BUFF_CMD_SIZE + 1);
+    memset(m_msgBuffer, 0, ATDEV_BUFF_MSG_SIZE + 1);
 
     // init Counter
     m_msgCount ^= m_msgCount;
@@ -32,13 +32,13 @@ uint8_t ATDev::sendATCmd(bool defaultEnd, uint8_t timeOut)
     // is it the default AT end or had his own end?
     if (defaultEnd) {
         // set default end of AT communication
-        memset(m_endBuffer, 0, SIM5218_BUFF_END_SIZE + 1);
-        strncpy_P(m_endBuffer, SIM5218_END_OK, SIM5218_BUFF_END_SIZE);    
+        memset(m_endBuffer, 0, ATDEV_BUFF_END_SIZE + 1);
+        strncpy_P(m_endBuffer, ATDEV_END_OK, SIM5218_BUFF_END_SIZE);    
     }
     m_endCount = strlen(m_endBuffer);
 
     // Clear input Serial buffer
-    while (Serial.read() >= 0);
+    while (m_hwSerial.read() >= 0);
 
     // Send AT command
     Serial.println(m_cmdBuffer);
@@ -55,21 +55,21 @@ uint8_t ATDev::sendATCmd(bool defaultEnd, uint8_t timeOut)
     }
 
     // wait until all data are send
-    Serial.flush();
+    m_hwSerial.flush();
 
     // process answer
     do {
 
         // if data in serial input buffer
-        while (Serial.available()) {
+        while (m_hwSerial.available()) {
 
             // buffer is full
             if (m_msgCount + 1 >= SIM5218_BUFF_MSG_SIZE) {
-                return SIM5218_ERR_BUFFER_FULL;
+                return ATDEV_ERR_BUFFER_FULL;
             }
 
             // read into buffer
-            m_msgBuffer[++m_msgCount] = Serial.read();
+            m_msgBuffer[++m_msgCount] = m_hwSerial.read();
         }
 
         // check is it the end of AT Command in answer buffer
@@ -78,14 +78,14 @@ uint8_t ATDev::sendATCmd(bool defaultEnd, uint8_t timeOut)
             return 0; 
         }
         // Error
-        else if (m_msgCount >= SIM5218_END_ERROR_SIZE &&
-                strstr_P(m_msgBuffer[m_msgCount - SIM5218_END_ERROR_SIZE], SIM5218_END_ERROR) != 0) {
-            return SIM5218_ERR_ERROR_RECEIVED;
+        else if (m_msgCount >= ATDEV_END_ERROR_SIZE &&
+                strstr_P(m_msgBuffer[m_msgCount - ATDEV_END_ERROR_SIZE], ATDEV_END_ERROR) != 0) {
+            return ATDEV_ERR_ERROR_RECEIVED;
         }
 
     } while (m_timeOutMillis <= millis()); // timeout
 
-    return SIM5218_ERR_TIMEOUT;
+    return ATDEV_ERR_TIMEOUT;
 }
 
 # vim: set sts=4 sw=4 ts=4 et:

@@ -1,22 +1,11 @@
 
-#ifndef SMS_H
-#define SMS_H
-
-// includes
-#include<ATDev.h>
-
-// commands
-#define ATDEV_CMD_CPMS PSTR("AT+CPMS=\"SM\",\"SM\",\"SM\"")
-#define ATDEV_CMD_CMGS PSTR("AT+CMGS=\"%s\"")
-#define ATDEV_CMD_CMGF PSTR("AT+CMGF=%d")
-
-// option
-#define ATDEV_OPT_CMGF_TXT 0x01
+#ifndef ISMS_H
+#define ISMS_H
 
 // data size
 // the real size is SIZE+1 for char buffer
-#define SMS_TXT_SIZE 160
-#define SMS_NUM_SIZE 15
+#define ATDEV_SMS_TXT_SIZE 160
+#define ATDEV_SMS_NUM_SIZE 15
 
 /**
  * Object for store sms data
@@ -30,10 +19,10 @@ class SMS_Data
 
     public:
         /** Phone number string */
-        char m_number[SMS_NUM_SIZE + 1];
+        char m_number[ATDEV_SMS_NUM_SIZE + 1];
 
         /** SMS body string */
-        char m_message[SMS_TXT_SIZE + 1];
+        char m_message[ATDEV_SMS_TXT_SIZE + 1];
 
         /**
          * Cleanup all buffers.
@@ -46,10 +35,9 @@ class SMS_Data
 /**
  * Object for handle all communication with ATDEV chip
  */
-class SMS : public virtual ATDev
+class ISMS
 {
-    SMS();
-    ~SMS();
+    ISMS();
 
     public:
 
@@ -59,7 +47,7 @@ class SMS : public virtual ATDev
         /**
          *
          */
-        uint8_t sendSMS();
+        virtual uint8_t sendSMS();
 }
 
 #endif
