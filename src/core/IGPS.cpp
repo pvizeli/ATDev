@@ -20,4 +20,4 @@ IGPS::IGPS()
     }
 }
 
-# vim: set sts=4 sw=4 ts=4 et:
+// vim: set sts=4 sw=4 ts=4 et:

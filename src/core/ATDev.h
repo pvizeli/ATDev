@@ -28,15 +28,15 @@
 #define ATDEV_BUFF_END_SIZE 15
 
 // error codes
-#define ATDEV_ERR_BUFFER_FULL 0x01
-#define ATDEV_ERR_ERROR_RECEIVED 0x02
-#define ATDEV_ERR_UNEXPECTED_RESULT 0x03
-#define ATDEV_ERR_TIMEOUT 0x04
-#define ATDEV_ERR_NO_DATA 0x05
-#define ATDEV_ERR_INITIALIZE 0x06
+#define ATDEV_ERR_BUFFER_FULL 0x12
+#define ATDEV_ERR_ERROR_RECEIVED 0x13
+#define ATDEV_ERR_UNEXPECTED_RESULT 0x14
+#define ATDEV_ERR_TIMEOUT 0x15
+#define ATDEV_ERR_NO_DATA 0x16
+#define ATDEV_ERR_INITIALIZE 0x17
 
 // OK
-#define ATDEV_OK 0x00
+#define ATDEV_OK 0x01
 
 // Network status
 #define ATDEV_NETSTAT_UNKNOWN 0x00
@@ -76,6 +76,9 @@ class ATDev
         /** Size of end string. Used in sendATCmd */
         uint8_t m_endCount;
 
+        /** */
+        uint8_t m_onModulePin;
+
         /** Timeout status */
         uint16_t m_timeOutMillis;
 
@@ -93,20 +96,26 @@ class ATDev
          *
          *
          */
-        bool isReady(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
-
-        /**
-         *
-         */
-        uint8_t setSIMPin(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+        uint8_t doWakeup(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
 
         /**
          *
          *
          */
-        uint8_t getNetworkStatus(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+        uint8_t isReady(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+
+        /**
+         *
+         */
+        //uint8_t setSIMPin(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+
+        /**
+         *
+         *
+         */
+        //uint8_t getNetworkStatus(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
 }
 
 #endif
 
-# vim: set sts=4 sw=4 ts=4 et:
+// vim: set sts=4 sw=4 ts=4 et:

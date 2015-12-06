@@ -8,4 +8,4 @@ SMS_Data::cleanUp()
     memset(m_message, 0, ATDEV_SMS_TXT_SIZE + 1);
 }
 
-# vim: set sts=4 sw=4 ts=4 et:
+// vim: set sts=4 sw=4 ts=4 et:
