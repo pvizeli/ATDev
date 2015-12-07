@@ -4,7 +4,7 @@ SIM5218 modem;
 
 void setup() {
 
-  modem.initialize(&Serial, 115200, 2);
+  modem.initialize(&Serial, static_cast<uint16_t>(115200), 2);
 
 }
 

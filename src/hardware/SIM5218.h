@@ -17,12 +17,12 @@
  * Object for handle all communication with SIM5218 chip
  */
 class SIM5218 : 
-    public virtual ATDev,
+    public virtual ATDev
 #ifdef SIM5218_USE_ATEASYSMS
-    public ATEasySMS,
+    ,public ATEasySMS
 #endif
 #ifdef SIM5218_USE_GPS
-    public IGPS
+    ,public IGPS
 #endif
 {
     public:
@@ -32,12 +32,12 @@ class SIM5218 :
         /**
          * Impl. from IGPS
          */
-        virtual uint8_t onGPS(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
-        virtual uint8_t offGPS(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
-        virtual uint8_t receiveGPS(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+        virtual uint8_t onGPS(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+        virtual uint8_t offGPS(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+        virtual uint8_t receiveGPS(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT);
 #endif
         
-}
+};
 
 #endif
 

@@ -25,8 +25,8 @@ class ATEasySMS : public ISMS, public virtual ATDev
         /**
          *
          */
-        uint8_t sendSMS();
-}
+        virtual uint8_t sendSMS();
+};
 
 #endif
 

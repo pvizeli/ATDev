@@ -1,8 +1,8 @@
 
-#include "GPS.h"
+#include "IGPS.h"
 
 
-GPS_Data::cleanUp()
+void GPS_Data::cleanUp()
 {
     memset(m_latitude, 0, ATDEV_GPS_LATITUDE_SIZE + 1);
     memset(m_longitude, 0, ATDEV_GPS_LONGITUDE_SIZE + 1);
@@ -13,7 +13,7 @@ GPS_Data::cleanUp()
     m_longPos   = 0x00;
 }
 
-IGPS::IGPS()
+IGPS::~IGPS()
 {
     if (m_isGPSOn) {
         this->offGPS();

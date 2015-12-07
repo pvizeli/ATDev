@@ -2,6 +2,9 @@
 #ifndef ISMS_H
 #define ISMS_H
 
+// include
+#include "ATDev.h"
+
 // data size
 // the real size is SIZE+1 for char buffer
 #define ATDEV_SMS_TXT_SIZE 160
@@ -12,12 +15,11 @@
  */
 class SMS_Data
 {
-    private:
+    public:
         SMS_Data() {
             this->cleanUp();
         }
 
-    public:
         /** Phone number string */
         char m_number[ATDEV_SMS_NUM_SIZE + 1];
 
@@ -30,16 +32,16 @@ class SMS_Data
          * Call this function to make this object ready for new message.
          */
         void cleanUp();
-}
+};
 
 /**
  * Object for handle all communication with ATDEV chip
  */
 class ISMS
 {
-    ISMS();
-
     public:
+
+        ISMS();
 
         /** SMS Object for receive/send sms */
         SMS_Data m_smsData;
@@ -47,8 +49,8 @@ class ISMS
         /**
          *
          */
-        virtual uint8_t sendSMS();
-}
+        virtual uint8_t sendSMS() const = 0;
+};
 
 #endif
 

@@ -5,6 +5,8 @@
 // includes
 #include <Arduino.h>
 #include <inttypes.h>
+#include <string.h>
+#include <avr/pgmspace.h>
 
 // chars
 #define ATDEV_CR 0x0D
@@ -17,15 +19,15 @@
 #define ATDEV_CMD_CREG PSTR("AT+CREG=?")
 
 // possible ends of AT command
-#define ATDEV_END_OK PSTR("OK\x0D\x0A")
-#define ATDEV_END_ERROR PSTR("ERROR\x0D\x0A")
-#define ATDEV_END_ERROR_SIZE 7
+#define ATDEV_END_OK PSTR("OK")
+#define ATDEV_END_ERROR PSTR("ERROR")
+#define ATDEV_END_ERROR_SIZE 5
 
 // buffer size
 // the real size is SIZE+1 for char buffer
-#define ATDEV_BUFF_CMD_SIZE 63
-#define ATDEV_BUFF_MSG_SIZE 255
-#define ATDEV_BUFF_END_SIZE 15
+#define ATDEV_BUFF_CMD_SIZE 32
+#define ATDEV_BUFF_MSG_SIZE 64
+#define ATDEV_BUFF_END_SIZE 16
 
 // error codes
 #define ATDEV_ERR_BUFFER_FULL 0x12
@@ -48,14 +50,13 @@
 
 // Time-Outs
 #define ATDEV_DEFAULT_TIMEOUT 2500
+#define ATDEV_POWER_TIMEOUT 5000
 
 /**
  * Object for handle all communication with ATDEV chip
  */
 class ATDev
 {
-    ATDev();
-
     protected:
 
         /** UART inteface for communication with device */
@@ -71,10 +72,10 @@ class ATDev
         char m_endBuffer[ATDEV_BUFF_END_SIZE + 1];
 
         /** AT CMD Buffer counter */
-        uint16_t m_msgCount;
+        uint16_t m_msgPtr;
 
         /** Size of end string. Used in sendATCmd */
-        uint8_t m_endCount;
+        uint8_t m_endSize;
 
         /** */
         uint8_t m_onModulePin;
@@ -86,35 +87,38 @@ class ATDev
          *
          *
          */
-        uint8_t sendATCmd(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT, bool defaultEnd = true);
+        uint8_t sendATCmd(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT, bool abruptEnd = false);
 
     public:
+    
+        ATDev();
 
-        uint8_t initialize(HardwareSerial *UART, uint8_t baudrate, uint8_t onPinMod);
 
-        /**
-         *
-         *
-         */
-        uint8_t doWakeup(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+        uint8_t initialize(HardwareSerial *UART, uint16_t baudrate, uint8_t onPinMod);
 
         /**
          *
          *
          */
-        uint8_t isReady(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
-
-        /**
-         *
-         */
-        //uint8_t setSIMPin(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+        uint8_t onPower(uint16_t timeOut = ATDEV_POWER_TIMEOUT);
 
         /**
          *
          *
          */
-        //uint8_t getNetworkStatus(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT);
-}
+        uint8_t isReady(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+
+        /**
+         *
+         */
+        //uint8_t setSIMPin(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+
+        /**
+         *
+         *
+         */
+        //uint8_t getNetworkStatus(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+};
 
 #endif
 

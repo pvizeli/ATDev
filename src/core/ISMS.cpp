@@ -1,8 +1,8 @@
 
-#include<SMS.h>
+#include "ISMS.h"
 
 
-SMS_Data::cleanUp()
+void SMS_Data::cleanUp()
 {
     memset(m_number, 0, ATDEV_SMS_NUM_SIZE + 1);
     memset(m_message, 0, ATDEV_SMS_TXT_SIZE + 1);

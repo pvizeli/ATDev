@@ -2,13 +2,14 @@
 #ifndef IGPS_H
 #define IGPS_H
 
-// includes
+// include
+#include "ATDev.h"
 
 // data size
 // the real size is SIZE+1 for char buffer
-#define ATDEV_GPS_LATITUDE_SIZE 15
-#define ATDEV_GPS_LONGITUDE_SIZE 15
-#define ATDEV_GPS_ALTITUDE_SIZE 15
+#define ATDEV_GPS_LATITUDE_SIZE 10
+#define ATDEV_GPS_LONGITUDE_SIZE 10
+#define ATDEV_GPS_ALTITUDE_SIZE 10
 #define ATDEV_GPS_SPEED_SIZE 8
 
 // error codes
@@ -20,12 +21,11 @@
  */
 class GPS_Data
 {
-    private:
+    public:
         GPS_Data() {
             this->cleanUp();
         }
 
-    public:
         char m_latitude[ATDEV_GPS_LATITUDE_SIZE];
         char m_longitude[ATDEV_GPS_LONGITUDE_SIZE];
         char m_altitude[ATDEV_GPS_ALTITUDE_SIZE];
@@ -40,25 +40,25 @@ class GPS_Data
          * Call this function to make this object ready for new gps data.
          */
         void cleanUp();
-}
+};
 
 /**
  * Object for handle all communication with AT and GPS
  */
 class IGPS
 {
-    IGPS() {
-        m_isGPSOn = false;
-    }
-
-    ~IGPS();
-
     protected:
 
         /** is GPS module init and run */
         bool m_isGPSOn;
 
     public:
+
+        IGPS() {
+            m_isGPSOn = false;
+        }
+
+        ~IGPS();
 
         /** GPS Object for store gps data */
         GPS_Data m_gpsData;
@@ -67,19 +67,19 @@ class IGPS
          *
          *
          */
-        virtual uint8_t onGPS(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT) = 0;
+        virtual uint8_t onGPS(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT) const = 0;
 
         /**
          *
          *
          */
-        virtual uint8_t offGPS(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT) = 0;
+        virtual uint8_t offGPS(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT) const = 0;
 
         /**
          *
          */
-        virtual uint8_t receiveGPS(uint8_t timeOut = ATDEV_DEFAULT_TIMEOUT) = 0;
-}
+        virtual uint8_t receiveGPS(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT) const = 0;
+};
 
 #endif
 
