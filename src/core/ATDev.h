@@ -87,14 +87,14 @@ class ATDev
          *
          *
          */
-        uint8_t sendATCmd(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT, bool abruptEnd = false);
+        uint8_t sendATCmd(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT, bool abruptEnd = false, char* readBuf = NULL, uint16_t readBufSize = ATDEV_BUFF_MSG_SIZE);
 
     public:
     
         ATDev();
 
 
-        uint8_t initialize(HardwareSerial *UART, uint16_t baudrate, uint8_t onPinMod);
+        void initialize(HardwareSerial *UART, long baudrate, uint8_t onPinMod);
 
         /**
          *
@@ -111,7 +111,7 @@ class ATDev
         /**
          *
          */
-        //uint8_t setSIMPin(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+        uint8_t setSIMPin(uint16_t pin, uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT);
 
         /**
          *
