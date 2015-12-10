@@ -3,12 +3,14 @@
 #define ISMS_H
 
 // include
-#include "ATDev.h"
+# include "ATDev.h"
 
 // data size
 // the real size is SIZE+1 for char buffer
-#define ATDEV_SMS_TXT_SIZE 160
-#define ATDEV_SMS_NUM_SIZE 15
+# ifndef ATDEV_SMS_TXT_SIZE
+#  define ATDEV_SMS_TXT_SIZE 160
+# endif
+# define ATDEV_SMS_NUM_SIZE 15
 
 /**
  * Object for store sms data

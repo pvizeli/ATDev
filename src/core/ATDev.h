@@ -9,9 +9,11 @@
 #include <avr/pgmspace.h>
 
 // chars
-#define ATDEV_CR 0x0D
-#define ATDEV_LF 0x0A
-#define ATDEV_END 0x1A
+#define ATDEV_CH_CR 0x0D
+#define ATDEV_CH_LF 0x0A
+#define ATDEV_CH_END 0x1A
+#define ATDEV_CH_SP 0x20
+#define ATDEV_CH_CO 0x2C
 
 // commands
 #define ATDEV_CMD_AT PSTR("AT")
@@ -50,7 +52,7 @@
 
 // Time-Outs
 #define ATDEV_DEFAULT_TIMEOUT 2500
-#define ATDEV_POWER_TIMEOUT 5000
+#define ATDEV_POWER_RETRY 4 
 
 /**
  * Object for handle all communication with ATDEV chip
@@ -71,23 +73,32 @@ class ATDev
         /** Buffer for handling end of AT request */
         char m_endBuffer[ATDEV_BUFF_END_SIZE + 1];
 
-        /** AT CMD Buffer counter */
-        uint16_t m_msgPtr;
-
-        /** Size of end string. Used in sendATCmd */
-        uint8_t m_endSize;
+        /** AT CMD read Buffer counter */
+        uint16_t m_readPtr;
 
         /** */
         uint8_t m_onModulePin;
 
-        /** Timeout status */
-        uint16_t m_timeOutMillis;
+        /** Timeout for sendATCmd */
+        uint16_t m_timeOut;
 
         /**
          *
          *
          */
-        uint8_t sendATCmd(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT, bool abruptEnd = false, char* readBuf = NULL, uint16_t readBufSize = ATDEV_BUFF_MSG_SIZE);
+        uint8_t sendATCmd(bool abruptEnd = false, char* readBuf = NULL, uint16_t readBufSize = ATDEV_BUFF_MSG_SIZE);
+
+        /**
+         *
+         *
+         */
+        void parseInternalData();
+
+        /**
+         *
+         *
+         */
+        char* getParseElement(uint8_t indx);
 
     public:
     
@@ -100,24 +111,24 @@ class ATDev
          *
          *
          */
-        uint8_t onPower(uint16_t timeOut = ATDEV_POWER_TIMEOUT);
+        uint8_t onPower();
 
         /**
          *
          *
          */
-        uint8_t isReady(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+        uint8_t isReady();
 
         /**
          *
          */
-        uint8_t setSIMPin(uint16_t pin, uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+        uint8_t setSIMPin(uint16_t pin);
 
         /**
          *
          *
          */
-        //uint8_t getNetworkStatus(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+        uint8_t getNetworkStatus();
 };
 
 #endif

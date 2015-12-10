@@ -32,9 +32,9 @@ class SIM5218 :
         /**
          * Impl. from IGPS
          */
-        virtual uint8_t onGPS(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT);
-        virtual uint8_t offGPS(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT);
-        virtual uint8_t receiveGPS(uint16_t timeOut = ATDEV_DEFAULT_TIMEOUT);
+        virtual uint8_t onGPS();
+        virtual uint8_t offGPS();
+        virtual uint8_t receiveGPS();
 #endif
         
 };
