@@ -12,6 +12,10 @@
 # endif
 # define ATDEV_SMS_NUM_SIZE 15
 
+// option
+#define ATDEV_SMS_DEL_ALL 0x04
+#define ATDEV_SMS_DEL_READED 0x03
+
 /**
  * Object for store sms data
  */
@@ -43,15 +47,38 @@ class ISMS
 {
     public:
 
-        ISMS();
-
         /** SMS Object for receive/send sms */
         SMS_Data m_smsData;
 
         /**
          *
          */
+        virtual uint8_t initializeSMS() const = 0;
+
+        /**
+         *
+         */
         virtual uint8_t sendSMS() const = 0;
+
+        /**
+         *
+         */
+        virtual uint8_t receiveSMS(uint8_t idx) const = 0;
+
+        /**
+         *
+         */
+        virtual uint8_t deleteSMS(uint8_t idx) const = 0;
+
+        /**
+         *
+         */
+        virtual uint8_t deleteAllSMS(uint8_t flag) const = 0;
+
+        /**
+         *
+         */
+        virtual uint8_t readAllNewSMS() const = 0;
 };
 
 #endif

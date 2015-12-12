@@ -18,7 +18,7 @@
  */
 class SIM5218 : 
     public virtual ATDev
-#ifdef SIM5218_USE_ATEASYSMS
+#ifdef SIM5218_USE_EASYSMS
     ,public ATEasySMS
 #endif
 #ifdef SIM5218_USE_GPS

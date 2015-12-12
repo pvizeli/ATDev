@@ -115,6 +115,8 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
 
 void ATDev::parseInternalData()
 {
+    bool isString = false;
+
     // search hole string
     for (uint16_t i = 0; i < ATDEV_BUFF_MSG_SIZE; i++) {
 
@@ -122,9 +124,14 @@ void ATDev::parseInternalData()
         if (m_msgBuffer[i] == 0x00) {
             return;
         }
+        // is string "xy zyx"
+        else if (m_msgBuffer[i] == ATDEV_CH_IC) {
+            m_msgBuffer[i] = 0x00;
+            isString = !isString;
+        }
         // ' ' or ',' replace with '\0'
-        else if (m_msgBuffer[i] == ATDEV_CH_SP || 
-                m_msgBuffer[i] == ATDEV_CH_CO) {
+        else if (!isString && (m_msgBuffer[i] == ATDEV_CH_SP || 
+                m_msgBuffer[i] == ATDEV_CH_CO)) {
             m_msgBuffer[i] = 0x00;
         }
     }

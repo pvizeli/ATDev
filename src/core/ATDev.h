@@ -14,6 +14,8 @@
 #define ATDEV_CH_END 0x1A
 #define ATDEV_CH_SP 0x20
 #define ATDEV_CH_CO 0x2C
+#define ATDEV_CH_IC 0x22
+#define ATDEV_CH_AN 0x3E
 
 // commands
 #define ATDEV_CMD_AT PSTR("AT")
