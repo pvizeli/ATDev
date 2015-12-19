@@ -67,18 +67,18 @@ class IGPS
          *
          *
          */
-        virtual uint8_t onGPS() const = 0;
+        virtual uint8_t onGPS() = 0;
 
         /**
          *
          *
          */
-        virtual uint8_t offGPS() const = 0;
+        virtual uint8_t offGPS() = 0;
 
         /**
          *
          */
-        virtual uint8_t receiveGPS() const = 0;
+        virtual uint8_t receiveGPS() = 0;
 };
 
 #endif

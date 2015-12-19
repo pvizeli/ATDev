@@ -53,32 +53,32 @@ class ISMS
         /**
          *
          */
-        virtual uint8_t initializeSMS() const = 0;
+        virtual uint8_t initializeSMS() = 0;
 
         /**
          *
          */
-        virtual uint8_t sendSMS() const = 0;
+        virtual uint8_t sendSMS() = 0;
 
         /**
          *
          */
-        virtual uint8_t receiveSMS(uint8_t idx) const = 0;
+        virtual uint8_t receiveSMS(uint8_t idx) = 0;
 
         /**
          *
          */
-        virtual uint8_t deleteSMS(uint8_t idx) const = 0;
+        virtual uint8_t deleteSMS(uint8_t idx) = 0;
 
         /**
          *
          */
-        virtual uint8_t deleteAllSMS(uint8_t flag) const = 0;
+        virtual uint8_t deleteAllSMS(uint8_t flag) = 0;
 
         /**
          *
          */
-        virtual uint8_t readAllNewSMS() const = 0;
+        virtual uint8_t readAllNewSMS() = 0;
 };
 
 #endif

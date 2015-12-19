@@ -13,9 +13,9 @@
 #define ATDEV_CH_LF 0x0A
 #define ATDEV_CH_END 0x1A
 #define ATDEV_CH_SP 0x20
-#define ATDEV_CH_CO 0x2C
-#define ATDEV_CH_IC 0x22
-#define ATDEV_CH_AN 0x3E
+#define ATDEV_CH_CO 0x2C // ,
+#define ATDEV_CH_IC 0x22 // "
+#define ATDEV_CH_AN 0x3E // >
 
 // commands
 #define ATDEV_CMD_AT PSTR("AT")
@@ -26,6 +26,7 @@
 #define ATDEV_END_OK PSTR("OK")
 #define ATDEV_END_ERROR PSTR("ERROR")
 #define ATDEV_END_ERROR_SIZE 5
+#define ATDEV_END_CMS PSTR("+CMS ERROR")
 
 // buffer size
 // the real size is SIZE+1 for char buffer
@@ -94,13 +95,18 @@ class ATDev
          *
          *
          */
-        void parseInternalData();
+        uint8_t parseInternalData();
 
         /**
          *
          *
          */
         char* getParseElement(uint8_t indx);
+
+        /**
+         *
+         */
+        bool isCMSError();
 
     public:
     

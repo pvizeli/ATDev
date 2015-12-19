@@ -46,15 +46,23 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
     }
     endSize = strlen(m_endBuffer);
 
-    // Clear input Serial buffer
-    while (m_hwSerial->read() >= 0);
-
     ////
     // Send AT command
-    m_hwSerial->println(m_cmdBuffer);
+    if (m_cmdBuffer[0] != 0x00) {
 
-    // clean comand buffer for next use
-    memset(m_cmdBuffer, 0x00, ATDEV_BUFF_CMD_SIZE);
+        // Clear input Serial buffer
+        while (m_hwSerial->read() >= 0);
+
+        // send command
+        m_hwSerial->println(m_cmdBuffer);
+
+        // clean comand buffer for next use
+        memset(m_cmdBuffer, 0x00, ATDEV_BUFF_CMD_SIZE);
+
+        ////
+        // wait until all data are send
+        m_hwSerial->flush();
+    }
 
     ////
     // Calc Timeout
@@ -71,9 +79,6 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
     // reset timeout for next function
     m_timeOut = ATDEV_DEFAULT_TIMEOUT;
     
-    ////
-    // wait until all data are send
-    m_hwSerial->flush();
 
     ////
     // process answer
@@ -113,16 +118,17 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
     return ATDEV_ERR_TIMEOUT;
 }
 
-void ATDev::parseInternalData()
+uint8_t ATDev::parseInternalData()
 {
-    bool isString = false;
+    bool    isString    = false;
+    uint8_t params      = 0;
 
     // search hole string
     for (uint16_t i = 0; i < ATDEV_BUFF_MSG_SIZE; i++) {
 
         // end
         if (m_msgBuffer[i] == 0x00) {
-            return;
+            return params;
         }
         // is string "xy zyx"
         else if (m_msgBuffer[i] == ATDEV_CH_IC) {
@@ -134,7 +140,14 @@ void ATDev::parseInternalData()
                 m_msgBuffer[i] == ATDEV_CH_CO)) {
             m_msgBuffer[i] = 0x00;
         }
+
+        // count
+        if (m_msgBuffer[i] == 0x00 && m_msgBuffer[i-1] != 0x00) {
+            params++;
+        }
     }
+
+    return params;
 }
 
 char* ATDev::getParseElement(uint8_t indx)
@@ -218,6 +231,16 @@ uint8_t ATDev::getNetworkStatus()
     }
 
     return ATDEV_NETSTAT_UNKNOWN;
+}
+
+bool ATDev::isCMSError()
+{
+    // found "+CMS ERROR: %d"
+    if (strstr_P(m_msgBuffer, ATDEV_END_CMS) != NULL) {
+        return true;
+    }
+
+    return false;
 }
 
 // vim: set sts=4 sw=4 ts=4 et:
