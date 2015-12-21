@@ -5,6 +5,21 @@
 // include
 # include "ATDev.h"
 
+// commands
+#define ATDEV_CMD_CMGS PSTR("AT+CMGS=\"%s\"")
+#define ATDEV_CMD_CMGD PSTR("AT+CMGD=%d,%d")
+#define ATDEV_CMD_CMGR PSTR("AT+CMGR=%d")
+#define ATDEV_CMD_CMGL PSTR("AT+CMGL=\"%S\"")
+
+// option
+#define ATDEV_OPT_CMGD_DEL_ALL 0x04
+#define ATDEV_OPT_CMGD_DEL_IDX 0x00
+#define ATDEV_OPT_CMGD_DEL_READED 0x03
+
+#define ATDEV_OPT_CMGL_UNREAD PSTR("REC UNREAD")
+#define ATDEV_OPT_CMGL_READ PSTR("REC READ")
+#define ATDEV_OPT_CMGL_ALL PSTR("ALL")
+
 // data size
 // the real size is SIZE+1 for char buffer
 # ifndef ATDEV_SMS_TXT_SIZE
@@ -15,6 +30,9 @@
 // option
 #define ATDEV_SMS_DEL_ALL 0x04
 #define ATDEV_SMS_DEL_READED 0x03
+
+// Val
+#define ATDEV_SMS_NO_MSG 0x00
 
 /**
  * Object for store sms data
@@ -78,7 +96,7 @@ class ISMS
         /**
          *
          */
-        virtual uint8_t readAllNewSMS() = 0;
+        virtual uint8_t readNextIdxSMS() = 0;
 };
 
 #endif

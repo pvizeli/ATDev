@@ -1,11 +1,6 @@
 
 #include "ATEasySMS.h"
 
-ATEasySMS::ATEasySMS()
-{
-    memset(m_listNewMessageIdx, 0x00, ATDEV_EASYSMS_LIST_SIZE);
-}
-
 uint8_t ATEasySMS::initializeSMS()
 {
     ////
@@ -24,6 +19,7 @@ uint8_t ATEasySMS::initializeSMS()
         return ATDEV_ERR_UNEXPECTED_RESULT;
     }
 
+    // Ende
     return ATDEV_OK;
 }
 
@@ -85,9 +81,26 @@ uint8_t ATEasySMS::receiveSMS(uint8_t idx)
     return ATDEV_ERR_UNEXPECTED_RESULT;
 }
 
-uint8_t ATEasySMS::readAllNewSMS()
+uint8_t ATEasySMS::readNextIdxSMS()
 {
-    snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGL, ATDEV_OPT_CMGL_UNREAD);
+    snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGL, ATDEV_OPT_CMGL_ALL);
+
+    // Send command
+    if (this->sendATCmd() == ATDEV_ERR_BUFFER_FULL) {
+        // Flush
+        while (m_hwSerial->read() >= 0);
+    }
+
+    // check answer / +CMGL: 
+    if (strstr_P(m_msgBuffer, ATDEV_STR_CMGL) != NULL) {
+
+        // parse
+        if (this->parseInternalData() > 1) {
+            return atoi(this->getParseElement(1));
+        }
+    }
+
+    return ATDEV_SMS_NO_MSG;
 }
 
 uint8_t ATEasySMS::doDeleteSMS(uint8_t idx, uint8_t flag)

@@ -135,9 +135,10 @@ uint8_t ATDev::parseInternalData()
             m_msgBuffer[i] = 0x00;
             isString = !isString;
         }
-        // ' ' or ',' replace with '\0'
+        // ' ' or ',' or ':' replace with '\0'
         else if (!isString && (m_msgBuffer[i] == ATDEV_CH_SP || 
-                m_msgBuffer[i] == ATDEV_CH_CO)) {
+                m_msgBuffer[i] == ATDEV_CH_CO ||
+                m_msgBuffer[i] == ATDEV_CH_DD)) {
             m_msgBuffer[i] = 0x00;
         }
 

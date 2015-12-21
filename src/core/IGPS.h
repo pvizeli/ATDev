@@ -13,7 +13,7 @@
 #define ATDEV_GPS_SPEED_SIZE 8
 
 // error codes
-#define ATDEV_GPS_ERR_CONNECTION 0x21
+#define ATDEV_GPS_ERR_NO_GPS_DATA 0x21
 #define ATDEV_GPS_ERR_NOT_INIT 0x22
 
 /**
@@ -58,10 +58,14 @@ class IGPS
             m_isGPSOn = false;
         }
 
-        ~IGPS();
-
         /** GPS Object for store gps data */
         GPS_Data m_gpsData;
+
+        /**
+         *
+         *
+         */
+        virtual uint8_t initializeGPS() = 0;
 
         /**
          *

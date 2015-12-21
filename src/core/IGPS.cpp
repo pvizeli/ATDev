@@ -13,11 +13,4 @@ void GPS_Data::cleanUp()
     m_longPos   = 0x00;
 }
 
-IGPS::~IGPS()
-{
-    if (m_isGPSOn) {
-        this->offGPS();
-    }
-}
-
 // vim: set sts=4 sw=4 ts=4 et:
