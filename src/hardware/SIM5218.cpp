@@ -1,9 +1,7 @@
 
 #include "SIM5218.h"
 
-#ifdef SIM5218_USE_GPS
-
-uint8_t SIM5218::onOffGPS(uint8_t onOff, uint8_t opt)
+uint8_t _SIM5218_GPS::onOffGPS(uint8_t onOff, uint8_t opt)
 {
     uint8_t ret;
     snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CGPS, onOff, opt);
@@ -19,7 +17,7 @@ uint8_t SIM5218::onOffGPS(uint8_t onOff, uint8_t opt)
     return ret;
 }
 
-uint8_t SIM5218::receiveGPS()
+uint8_t _SIM5218_GPS::receiveGPS()
 {
     // gps not running
     if (!m_isGPSOn) {
@@ -50,8 +48,6 @@ uint8_t SIM5218::receiveGPS()
 
     return ATDEV_OK;
 }
-
-#endif
 
 // vim: set sts=4 sw=4 ts=4 et:
 

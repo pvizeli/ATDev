@@ -16,18 +16,10 @@
 /**
  * Object for handle all communication with SIM5218 chip
  */
-class SIM5218 : 
-    public virtual ATDev
-#ifdef SIM5218_USE_EASYSMS
-    ,public ATEasySMS
-#endif
-#ifdef SIM5218_USE_GPS
-    ,public IGPS
-#endif
+class _SIM5218_GPS : 
+    public virtual ATDev,
+    public IGPS
 {
-
-#ifdef SIM5218_USE_GPS
-
     protected :
         /**
          *
@@ -51,8 +43,21 @@ class SIM5218 :
         }
 
         virtual uint8_t receiveGPS();
+};
+
+/**
+ * Object for handle all communication with SIM5218 chip
+ */
+class SIM5218 : 
+    public virtual ATDev
+#ifdef SIM5218_USE_EASYSMS
+    ,public ATEasySMS
 #endif
-        
+#ifdef SIM5218_USE_GPS
+    ,public _SIM5218_GPS
+#endif
+{
+
 };
 
 #endif
