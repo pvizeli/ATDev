@@ -42,6 +42,8 @@
 #define ATDEV_ERR_TIMEOUT 0x15
 #define ATDEV_ERR_NO_DATA 0x16
 #define ATDEV_ERR_INITIALIZE 0x17
+#define ATDEV_ERR_GPS_DATA 0x21
+#define ATDEV_ERR_GPS_INIT 0x22
 
 // OK
 #define ATDEV_OK 0x01
@@ -60,6 +62,7 @@
 
 /**
  * Object for handle all communication with ATDEV chip
+ *
  */
 class ATDev
 {
@@ -80,64 +83,118 @@ class ATDev
         /** AT CMD read Buffer counter */
         uint16_t m_readPtr;
 
-        /** */
+        /** Possible a pin for power on the shield */
         uint8_t m_onModulePin;
 
         /** Timeout for sendATCmd */
         uint16_t m_timeOut;
 
         /**
+         * Send/Read a AT formatet string.
          *
+         * Is a AT command in cmdBuffer it flush the serial input an 
+         * send this AT command. After that it will read the answer
+         * until OK or a error receive from modem (default).
          *
+         * The Arduino serial buffer are small. It read first all data
+         * an parse the input after none data receive from modem. It is
+         * possible to break the function immediately if receive a stop
+         * string witch the same as in endBuffer.
+         *
+         * Data are default read to mgsBuffer. You can also use your own
+         * input Buffer. EndBuffer hold your stop AT answer. Default use
+         * the standard AT answer end command.
+         *
+         * @param abruptEnd         Stop reading data immediately after
+         *                          receive equal data as endBuffer
+         * @param readBuf           Own read buffer insteat msgBuffer.
+         * @param readBufSize       Size of his own read buffer.
+         * @return                  ATDEV Okay/Error
          */
         uint8_t sendATCmd(bool abruptEnd = false, char* readBuf = NULL, uint16_t readBufSize = ATDEV_BUFF_MSG_SIZE);
 
         /**
+         * Parse data from msgBuffer with AT characteristic.
          *
+         * The function is like strtok but for AT answer. It replace
+         * ':' ',' ' ' with 0x00 and you can access to this elemelt with
+         * @see getPraseElement. It's like a array.
          *
+         * It support string. All data with "bla blu ble" will parse as one
+         * element.
+         *
+         * @preturn                 Count of elements that have create
          */
         uint8_t parseInternalData();
 
         /**
+         * Get a element of the parsed msgBuffer.
+         * @see parseInternalData();
          *
-         *
+         * @param indx              The element they will have
+         * @return                  A pointer to this element in msgBuffer
          */
         char* getParseElement(uint8_t indx);
 
-        /**
-         *
-         */
-        bool isCMSError();
 
     public:
-    
+   
+        /**
+         * Cleanups
+         */
         ATDev();
 
-
+        /**
+         * Initialize this Object.
+         *
+         * It will set the Serial object for communication and his baudrate.
+         * ATDev initialize all system relevant configs.
+         *
+         * @param UART              Serial object to device
+         * @param baudrate          Serial baudrate
+         * @param onPinMod          PIN for on/off the shield or 0
+         * @return                  ATDEV Okay/Error
+         */
         void initialize(HardwareSerial *UART, long baudrate, uint8_t onPinMod);
 
         /**
+         * Power On and check communication to device
          *
+         * Is modPin not equal to 0 it will power off and check for AT
+         * communication and is the device ready for commands.
          *
+         * @return                  ATDEV Okay/Error
          */
         uint8_t onPower();
 
         /**
+         * Send AT command to device for status check.
+         * Is the device ready for AT communication?
          *
-         *
+         * @return                  ATDEV Okay/Error
          */
         uint8_t isReady();
 
         /**
+         * Unlock the SIM.
          *
+         * @return                  ATDEV Okay/Error
          */
         uint8_t setSIMPin(uint16_t pin);
 
         /**
+         * Get the network status of the device back.
          *
-         *
+         * @return                  ATDEV network status or Okay/Error
          */
         uint8_t getNetworkStatus();
+
+        /**
+         * Parse a AT+CMS ERROR.
+         *
+         * @return              True if a error in msgBuffer receive.
+         */
+        bool isCMSError();
 };
 
 #endif

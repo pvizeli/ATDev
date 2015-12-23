@@ -4,13 +4,54 @@
 
 void GPS_Data::cleanUp()
 {
-    memset(m_latitude, 0, ATDEV_GPS_LATITUDE_SIZE + 1);
-    memset(m_longitude, 0, ATDEV_GPS_LONGITUDE_SIZE + 1);
-    memset(m_altitude, 0, ATDEV_GPS_ALTITUDE_SIZE + 1);
-    memset(m_speed, 0, ATDEV_GPS_SPEED_SIZE + 1);
+    memset(m_date, 0x00, ATDEV_GPS_DATE_SIZE + 1);
+    memset(m_time, 0x00, ATDEV_GPS_TIME_SIZE + 1);
 
-    m_latPos    = 0x00;
-    m_longPos   = 0x00;
+    m_latPos        ^= m_latPos;
+    m_longPos       ^= m_longPos;
+
+    m_latitude      = 0;
+    m_longitude     = 0;
+    m_altitude      = 0;
+    m_speed         = 0;
+}
+
+void GPS_Data::convertNMEALatitude(char *lat)
+{
+    uint16_t    deg;
+    double      min;
+    char        buffer[3];
+
+    // init
+    memset(buffer, 0x00, 3);
+
+    // export degre
+    strncpy(buffer, lat, 2);
+    deg = atoi(lat);
+
+    // export min
+    min = atof(lat+2);
+
+    m_latitude = deg + min / 60;
+}
+
+void GPS_Data::convertNMEALongitude(char *lat)
+{
+    uint16_t    deg;
+    double      min;
+    char        buffer[4];
+
+    // init
+    memset(buffer, 0x00, 4);
+
+    // export degre
+    strncpy(buffer, lat, 3);
+    deg = atoi(lat);
+
+    // export min
+    min = atof(lat+3);
+
+    m_longitude = deg + min / 60;
 }
 
 // vim: set sts=4 sw=4 ts=4 et:

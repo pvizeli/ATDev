@@ -32,7 +32,7 @@
 #define ATDEV_SMS_DEL_READED 0x03
 
 // Val
-#define ATDEV_SMS_NO_MSG 0x00
+#define ATDEV_SMS_NO_MSG 0xFF
 
 /**
  * Object for store sms data
@@ -69,32 +69,46 @@ class ISMS
         SMS_Data m_smsData;
 
         /**
+         * Initialize the AT device for handle SMS.
          *
+         * @return                  ATDEV Okay/Error
          */
         virtual uint8_t initializeSMS() = 0;
 
         /**
+         * Send SMS that store in @see m_smsData.
          *
+         * @return                  ATDEV Okay/Error
          */
         virtual uint8_t sendSMS() = 0;
 
         /**
+         * Receive SMS from SIM to @see m_smsData.
          *
+         * @param idx               Message index SIM store number
+         * @return                  ATDEV Okay/Error
          */
         virtual uint8_t receiveSMS(uint8_t idx) = 0;
 
         /**
+         * Delete SMS from SIM storage.
          *
+         * @param idx               Message index SIM store number
+         * @return                  ATDEV Okay/Error
          */
         virtual uint8_t deleteSMS(uint8_t idx) = 0;
 
         /**
+         * Delete all SMS from SIM storage.
          *
+         * @return                  ATDEV Okay/Error
          */
         virtual uint8_t deleteAllSMS(uint8_t flag) = 0;
 
         /**
+         * Get the next message index number from SIM storage.
          *
+         * @return                  Index nummber or ATDEV_SMS_NO_MSG
          */
         virtual uint8_t readNextIdxSMS() = 0;
 };
