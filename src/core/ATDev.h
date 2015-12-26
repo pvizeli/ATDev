@@ -21,7 +21,7 @@
 // commands
 #define ATDEV_CMD_AT PSTR("AT")
 #define ATDEV_CMD_CPIN PSTR("AT+CPIN=%d")
-#define ATDEV_CMD_CREG PSTR("AT+CREG=?")
+#define ATDEV_CMD_CREG PSTR("AT+CREG?")
 
 // possible ends of AT command
 #define ATDEV_END_OK PSTR("OK")
