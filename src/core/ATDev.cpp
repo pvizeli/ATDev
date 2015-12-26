@@ -184,11 +184,15 @@ void ATDev::initialize(HardwareSerial *UART, long baudrate, uint8_t onPinMod)
 
 uint8_t ATDev::onPower()
 {
+    // First AT CMD timeout
+    m_timeOut = ATDEV_FIRST_ATCMD_TIMEOUT;
+
     if (this->isReady() != ATDEV_OK) {
 
         digitalWrite(m_onModulePin, HIGH);
         delay(3000);
         digitalWrite(m_onModulePin, LOW);
+        delay(1000);
 
         // check is modem response
         for (uint8_t i = 0; i < ATDEV_POWER_RETRY; i++) {

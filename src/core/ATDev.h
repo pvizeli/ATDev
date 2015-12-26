@@ -57,8 +57,9 @@
 #define ATDEV_NETSTAT_REGISTERED 0x05
 
 // Time-Outs
-#define ATDEV_DEFAULT_TIMEOUT 2500
-#define ATDEV_POWER_RETRY 4 
+#define ATDEV_DEFAULT_TIMEOUT 3000
+#define ATDEV_FIRST_ATCMD_TIMEOUT 5000
+#define ATDEV_POWER_RETRY 6 
 
 /**
  * Object for handle all communication with ATDEV chip
