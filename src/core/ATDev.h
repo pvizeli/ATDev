@@ -60,6 +60,7 @@
 #define ATDEV_DEFAULT_TIMEOUT 3000
 #define ATDEV_FIRST_ATCMD_TIMEOUT 5000
 #define ATDEV_POWER_RETRY 6 
+#define ATDEV_WAIT 3000
 
 /**
  * Object for handle all communication with ATDEV chip
@@ -136,6 +137,18 @@ class ATDev
          * @return                  A pointer to this element in msgBuffer
          */
         char* getParseElement(uint8_t indx);
+
+        /**
+         * Wait function for severail AT commands.
+         *
+         * If ret is ATDEV_OK it will wait for connection or other
+         * things that the device have do. The return is the same
+         * as param ret.
+         *
+         * @param ret               The return command.
+         * @return                  @see ret.
+         */
+        uint8_t waitDevice(uint8_t ret);
 
 
     public:

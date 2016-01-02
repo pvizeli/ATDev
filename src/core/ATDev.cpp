@@ -172,6 +172,15 @@ char* ATDev::getParseElement(uint8_t indx)
     return NULL;
 }
 
+uint8_t ATDev::waitDevice(uint8_t ret)
+{
+    if (ret == ATDEV_OK) {
+        delay(ATDEV_WAIT);
+    }
+
+    return ret;
+}
+
 void ATDev::initialize(HardwareSerial *UART, long baudrate, uint8_t onPinMod)
 {
     m_hwSerial      = UART;
@@ -197,7 +206,7 @@ uint8_t ATDev::onPower()
         // check is modem response
         for (uint8_t i = 0; i < ATDEV_POWER_RETRY; i++) {
             if (this->isReady() == ATDEV_OK) {
-                return ATDEV_OK;
+                return this->waitDevice(ATDEV_OK);
             }
         }
     }
@@ -221,7 +230,7 @@ uint8_t ATDev::setSIMPin(uint16_t pin)
 {
     snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CPIN, pin);
 
-    return this->sendATCmd();
+    return this->waitDevice(this->sendATCmd());
 }
 
 uint8_t ATDev::getNetworkStatus()
