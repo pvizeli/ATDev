@@ -34,6 +34,9 @@
 // Val
 #define ATDEV_SMS_NO_MSG 0xFF
 
+// Timeouts
+#define ATDEV_SMS_TIMEOUT_SEND 20000
+
 /**
  * Object for store sms data
  */

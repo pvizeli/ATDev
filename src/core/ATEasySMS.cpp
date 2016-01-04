@@ -41,6 +41,7 @@ uint8_t ATEasySMS::sendSMS()
         m_cmdBuffer[0] = ATDEV_CH_END;
 
         // End of SMS
+        m_timeOut = ATDEV_SMS_TIMEOUT_SEND;
         return this->sendATCmd();
     }
 
