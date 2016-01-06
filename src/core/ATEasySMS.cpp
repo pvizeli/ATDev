@@ -56,6 +56,9 @@ uint8_t ATEasySMS::receiveSMS(uint8_t idx)
     m_endBuffer[0] = ATDEV_CH_LF; 
     m_endBuffer[1] = 0x00; 
 
+    // Cleanup SMS buffers
+    m_smsData.cleanUp();
+
     // Send command
     if (this->sendATCmd(true) == ATDEV_OK) {
 
@@ -69,7 +72,7 @@ uint8_t ATEasySMS::receiveSMS(uint8_t idx)
             return ATDEV_ERR_UNEXPECTED_RESULT;
         }
 
-        // Copy number
+        // copy number to buffer
         strncpy(m_smsData.m_number, this->getParseElement(2), ATDEV_SMS_NUM_SIZE);
 
         // set stop

@@ -37,6 +37,7 @@ uint8_t _SIM5218_GPS::receiveGPS()
 
     ////
     // Parse GPS Data to gpsData class
+    m_gpsData.cleanUp();
 
     // Convert format from NMEA
     m_gpsData.convertNMEALatitude(this->getParseElement(1));
