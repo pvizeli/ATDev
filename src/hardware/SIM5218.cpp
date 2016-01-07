@@ -19,6 +19,8 @@ uint8_t _SIM5218_GPS::onOffGPS(uint8_t onOff, uint8_t opt)
 
 uint8_t _SIM5218_GPS::receiveGPS()
 {
+    char latPos, longPos;
+
     // gps not running
     if (!m_isGPSOn) {
         return ATDEV_ERR_GPS_INIT;
@@ -40,8 +42,11 @@ uint8_t _SIM5218_GPS::receiveGPS()
     m_gpsData.cleanUp();
 
     // Convert format from NMEA
-    m_gpsData.convertNMEALatitude(this->getParseElement(1));
-    m_gpsData.convertNMEALongitude(this->getParseElement(1));
+    latPos    = *(this->getParseElement(2));
+    longPos   = *(this->getParseElement(4));
+
+    m_gpsData.convertNMEALatitude(this->getParseElement(1), latPos);
+    m_gpsData.convertNMEALongitude(this->getParseElement(2), longPos);
 
     m_gpsData.m_altitude = atof(this->getParseElement(7));
     m_gpsData.m_speed = atof(this->getParseElement(8));
@@ -49,8 +54,6 @@ uint8_t _SIM5218_GPS::receiveGPS()
     strncpy(m_gpsData.m_date, this->getParseElement(5), ATDEV_GPS_DATE_SIZE);
     strncpy(m_gpsData.m_time, this->getParseElement(6), ATDEV_GPS_TIME_SIZE);
 
-    m_gpsData.m_latPos    = *(this->getParseElement(2));
-    m_gpsData.m_longPos   = *(this->getParseElement(4));
 
     return ATDEV_OK;
 }

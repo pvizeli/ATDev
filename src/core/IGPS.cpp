@@ -16,7 +16,7 @@ void GPS_Data::cleanUp()
     m_speed         = 0;
 }
 
-void GPS_Data::convertNMEALatitude(char *lat)
+void GPS_Data::convertNMEALatitude(char *lat, char pos)
 {
     uint16_t    deg;
     double      min;
@@ -33,9 +33,16 @@ void GPS_Data::convertNMEALatitude(char *lat)
     min = atof(lat+2);
 
     m_latitude = deg + min / 60;
+
+    // position
+    m_latPos = pos;
+
+    if (pos == ATDEV_GPS_LATITUDE_S) {
+        m_latitude *= -1;
+    }
 }
 
-void GPS_Data::convertNMEALongitude(char *lat)
+void GPS_Data::convertNMEALongitude(char *lat, char pos)
 {
     uint16_t    deg;
     double      min;
@@ -52,6 +59,13 @@ void GPS_Data::convertNMEALongitude(char *lat)
     min = atof(lat+3);
 
     m_longitude = deg + min / 60;
+
+    // position
+    m_longPos = pos;
+
+    if (pos == ATDEV_GPS_LONGITUDE_W) {
+        m_longitude *= -1;
+    }
 }
 
 // vim: set sts=4 sw=4 ts=4 et:

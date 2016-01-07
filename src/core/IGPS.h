@@ -9,7 +9,11 @@
 // the real size is SIZE+1 for char buffer
 #define ATDEV_GPS_DATE_SIZE 6
 #define ATDEV_GPS_TIME_SIZE 8
-#define ATDEV_GPS_SPEED_SIZE 8
+
+#define ATDEV_GPS_LATITUDE_N 0x4E
+#define ATDEV_GPS_LATITUDE_S 0x53
+#define ATDEV_GPS_LONGITUDE_W 0x57
+#define ATDEV_GPS_LONGITUDE_E 0x45
 
 /**
  * Object for store gps data
@@ -56,15 +60,17 @@ class GPS_Data
          * Convert the string to latitude from NMEA format.
          *
          * @param lat           Input NMEA string
+         * @param pos           Position 'N' or 'S'
          */
-        void convertNMEALatitude(char *lat);
+        void convertNMEALatitude(char *lat, char pos);
 
         /**
          * Convert the string to longitude from NMEA format.
          *
          * @param lat           Input NMEA string
+         * @param pos           Position 'W' or 'E'
          */
-        void convertNMEALongitude(char *lat);
+        void convertNMEALongitude(char *lat, char pos);
 };
 
 /**

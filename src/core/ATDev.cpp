@@ -196,6 +196,9 @@ uint8_t ATDev::onPower()
     // First AT CMD timeout
     m_timeOut = ATDEV_FIRST_ATCMD_TIMEOUT;
 
+    // Wait for starting up modul
+    delay(m_timeOut);
+
     if (this->isReady() != ATDEV_OK) {
 
         digitalWrite(m_onModulePin, HIGH);
