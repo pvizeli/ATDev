@@ -1,6 +1,14 @@
+// Option
+#define SIM5218_USE_EASYSMS
+#define ATDEV_SMS_TXT_SIZE 80
+
 #include <ATDev_HW.h>
 
 SIM5218 modem;
+
+// Text & data
+#define MY_SMS_BODY PSTR("Hello world! That is my SMS :P")
+#define MY_SMS_NUMBER PSTR("")
 
 // PIN code
 uint16_t simPin = 0;
@@ -27,6 +35,23 @@ void setup() {
     // Connected with Carrier
     if (networkStatus == ATDEV_NETSTAT_REGISTERED || networkStatus == ATDEV_NETSTAT_ROAMING) {
       Serial.println(F("Modem connected with carrier"));
+
+      if (modem.initializeSMS() == ATDEV_OK) {
+        // Prepare sms data
+        strncmp_P(modem.m_smsData.m_number, MY_SMS_NUMBER, ATDEV_SMS_NUM_SIZE);
+        strncmp_P(modem.m_smsData.m_message, MY_SMS_BODY, ATDEV_SMS_TXT_SIZE);
+  
+        // send SMS
+        if (modem.sendSMS() == ATDEV_OK) {
+          Serial.println(F("SMS send"));
+        }
+        else {
+          Serial.println(F("sendSMS fail!"));
+        }
+      }
+      else {
+        Serial.println(F("initializeSMS fail!"));
+      }
     }
     else {
       Serial.print(F("Modem not connected! State: "));
