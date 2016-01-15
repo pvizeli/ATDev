@@ -104,6 +104,7 @@ class ISMS
         /**
          * Delete all SMS from SIM storage.
          *
+         * @param flag              ATDEV_SMS_DEL_ALL / ATDEV_SMS_DEL_READED
          * @return                  ATDEV Okay/Error
          */
         virtual uint8_t deleteAllSMS(uint8_t flag) = 0;
