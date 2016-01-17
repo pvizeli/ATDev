@@ -17,8 +17,10 @@ ATDev::ATDev()
 
 uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
 {
-    uint16_t    isTimeOut;
+    uint32_t    isTimeOut;
+    uint32_t    startTime;
     uint8_t     endSize;
+    bool        over;
 
     // UART initialize?
     if (m_hwSerial == NULL) {
@@ -66,14 +68,15 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
 
     ////
     // Calc Timeout
-    isTimeOut = millis();
+    startTime = millis();
+    isTimeOut = startTime + m_timeOut;
 
-    // If millis() overloaded
-    if (isTimeOut + m_timeOut < isTimeOut) {
-        isTimeOut = m_timeOut - (0xFFFF - isTimeOut);
+    // overloaded
+    if (isTimeOut < startTime) {
+        over = true;
     }
     else {
-        isTimeOut += m_timeOut;
+        over = false;
     }
 
     // reset timeout for next function
@@ -113,7 +116,14 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
             return ATDEV_ERR_ERROR_RECEIVED;
         }
 
-    } while (isTimeOut > millis()); // timeout
+        // calc diff timeout
+        if (over) {
+            if (startTime > millis()) {
+                over = false;
+            }
+        }
+
+    } while ((isTimeOut > millis() && !over) || over); // timeout
 
     return ATDEV_ERR_TIMEOUT;
 }
