@@ -23,6 +23,9 @@
 #define ATDEV_CMD_CPIN PSTR("AT+CPIN=%d")
 #define ATDEV_CMD_CREG PSTR("AT+CREG?")
 
+// tools
+#define ATDEV_INT_CHAR PSTR("%d")
+
 // possible ends of AT command
 #define ATDEV_END_OK PSTR("OK")
 #define ATDEV_END_ERROR PSTR("ERROR")
@@ -59,7 +62,7 @@
 // Time-Outs
 #define ATDEV_DEFAULT_TIMEOUT 3000
 #define ATDEV_FIRST_ATCMD_TIMEOUT 5000
-#define ATDEV_POWER_RETRY 6 
+#define ATDEV_POWER_RETRY 10 
 #define ATDEV_WAIT 3000
 
 /**

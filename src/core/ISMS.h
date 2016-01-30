@@ -7,7 +7,7 @@
 
 // commands
 #define ATDEV_CMD_CMGS PSTR("AT+CMGS=\"%s\"")
-#define ATDEV_CMD_CMGD PSTR("AT+CMGD=%d,%d")
+#define ATDEV_CMD_CMGD PSTR("AT+CMGD=%s,%d")
 #define ATDEV_CMD_CMGR PSTR("AT+CMGR=%d")
 #define ATDEV_CMD_CMGL PSTR("AT+CMGL=\"%S\"")
 

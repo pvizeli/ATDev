@@ -20,7 +20,7 @@ uint8_t ATEasySMS::initializeSMS()
     }
 
     // Ende
-    return ATDEV_OK;
+    return this->waitDevice(ATDEV_OK);
 }
 
 uint8_t ATEasySMS::sendSMS()
@@ -112,9 +112,18 @@ uint8_t ATEasySMS::readNextIdxSMS()
 
 uint8_t ATEasySMS::doDeleteSMS(uint8_t idx, uint8_t flag)
 {
-    snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGF, idx, flag);
+    char numIdx[4];
 
-    return this->sendATCmd();
+    // clean buffer
+    memset(numIdx, 0x00, 4);
+
+    // if IDX a number in store?
+    if (flag == ATDEV_OPT_CMGD_DEL_IDX) {
+        snprintf_P(numIdx, 3, ATDEV_INT_CHAR, idx);        
+    }
+
+    snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGD, numIdx, flag);
+    return this->waitDevice(this->sendATCmd());
 }
 
 

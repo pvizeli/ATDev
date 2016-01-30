@@ -14,7 +14,7 @@ uint8_t _SIM5218_GPS::onOffGPS(uint8_t onOff, uint8_t opt)
         m_isGPSOn = !m_isGPSOn;
     }
 
-    return ret;
+    return this->waitDevice(ret);
 }
 
 uint8_t _SIM5218_GPS::receiveGPS()

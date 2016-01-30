@@ -38,8 +38,8 @@ void setup() {
 
       if (modem.initializeSMS() == ATDEV_OK) {
         // Prepare sms data
-        strncmp_P(modem.m_smsData.m_number, MY_SMS_NUMBER, ATDEV_SMS_NUM_SIZE);
-        strncmp_P(modem.m_smsData.m_message, MY_SMS_BODY, ATDEV_SMS_TXT_SIZE);
+        strncpy_P(modem.m_smsData.m_number, MY_SMS_NUMBER, ATDEV_SMS_NUM_SIZE);
+        strncpy_P(modem.m_smsData.m_message, MY_SMS_BODY, ATDEV_SMS_TXT_SIZE);
   
         // send SMS
         if (modem.sendSMS() == ATDEV_OK) {
