@@ -28,9 +28,12 @@
 
 // possible ends of AT command
 #define ATDEV_END_OK PSTR("OK")
+#define ATDEV_END_LINE PSTR("\x0D\x0A")
 #define ATDEV_END_ERROR PSTR("ERROR")
 #define ATDEV_END_ERROR_SIZE 5
-#define ATDEV_END_CMS PSTR("+CMS ERROR")
+
+// string
+#define ATDEV_STR_CMS PSTR("+CMS ERROR")
 
 // buffer size
 // the real size is SIZE+1 for char buffer
@@ -60,7 +63,7 @@
 #define ATDEV_NETSTAT_ROAMING 0x05
 
 // Time-Outs
-#define ATDEV_DEFAULT_TIMEOUT 3000
+#define ATDEV_DEFAULT_TIMEOUT 3500
 #define ATDEV_FIRST_ATCMD_TIMEOUT 5000
 #define ATDEV_POWER_RETRY 10 
 #define ATDEV_WAIT 3000
@@ -117,6 +120,13 @@ class ATDev
          * @return                  ATDEV Okay/Error
          */
         uint8_t sendATCmd(bool abruptEnd = false, char* readBuf = NULL, uint16_t readBufSize = ATDEV_BUFF_MSG_SIZE);
+
+        /**
+         * Read line from seriel device.
+         *
+         * @return                  ATDEV Okay/Error
+         */
+        uint8_t readLine();
 
         /**
          * Parse data from msgBuffer with AT characteristic.

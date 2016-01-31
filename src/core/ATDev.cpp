@@ -43,7 +43,7 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
     // is it the default AT end or had his own end?
     // set default end of AT communication
     if (!abruptEnd) {
-        memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE);
+        memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
         strncpy_P(m_endBuffer, ATDEV_END_OK, ATDEV_BUFF_END_SIZE);    
     }
     endSize = strlen(m_endBuffer);
@@ -126,6 +126,15 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
     } while ((isTimeOut > millis() && !over) || over); // timeout
 
     return ATDEV_ERR_TIMEOUT;
+}
+
+uint8_t ATDev::readLine()
+{
+    // CR LF to end buffer
+    memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
+    strncpy_P(m_endBuffer, ATDEV_END_LINE, ATDEV_BUFF_END_SIZE);    
+
+    return this->sendATCmd(true);
 }
 
 uint8_t ATDev::parseInternalData()
@@ -263,7 +272,7 @@ uint8_t ATDev::getNetworkStatus()
 bool ATDev::isCMSError()
 {
     // found "+CMS ERROR: %d"
-    if (strstr_P(m_msgBuffer, ATDEV_END_CMS) != NULL) {
+    if (strstr_P(m_msgBuffer, ATDEV_STR_CMS) != NULL) {
         return true;
     }
 

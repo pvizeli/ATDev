@@ -53,14 +53,14 @@ uint8_t ATEasySMS::receiveSMS(uint8_t idx)
     snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGR, idx);
 
     // Prepare answer end
-    m_endBuffer[0] = ATDEV_CH_LF; 
-    m_endBuffer[1] = 0x00; 
+    memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
+    strncpy_P(m_endBuffer, ATDEV_STR_CMGR, ATDEV_BUFF_END_SIZE);
 
     // Cleanup SMS buffers
     m_smsData.cleanUp();
 
     // Send command
-    if (this->sendATCmd(true) == ATDEV_OK) {
+    if (this->sendATCmd(true) == ATDEV_OK && this->readLine() == ATDEV_OK) {
 
         // header to smal / receive a error
         if (this->isCMSError() || this->parseInternalData() == 0) {
@@ -86,24 +86,33 @@ uint8_t ATEasySMS::receiveSMS(uint8_t idx)
 
 uint8_t ATEasySMS::readNextIdxSMS()
 {
+    uint8_t ret;
+
+    // AT cmd
     snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGL, ATDEV_OPT_CMGL_ALL);
 
     // Prepare answer end
-    m_endBuffer[0] = ATDEV_CH_LF;
-    m_endBuffer[1] = 0x00;
+    memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
+    strncpy_P(m_endBuffer, ATDEV_STR_CMGL, ATDEV_BUFF_END_SIZE);
+
+    // Timeout
+    m_timeOut       = ATDEV_SMS_TIMEOUT_LIST;
 
     // Send command
     this->sendATCmd(true);
+
+    // read data
+    ret = this->readLine();
 
     // Flush
     while (m_hwSerial->read() >= 0);
 
     // check answer / +CMGL: 
-    if (strstr_P(m_msgBuffer, ATDEV_STR_CMGL) != NULL) {
+    if (ret == ATDEV_OK) {
 
         // parse
-        if (this->parseInternalData() > 1) {
-            return atoi(this->getParseElement(1));
+        if (this->parseInternalData() >= 0) {
+            return atoi(this->getParseElement(0));
         }
     }
 
@@ -119,11 +128,16 @@ uint8_t ATEasySMS::doDeleteSMS(uint8_t idx, uint8_t flag)
 
     // if IDX a number in store?
     if (flag == ATDEV_OPT_CMGD_DEL_IDX) {
-        snprintf_P(numIdx, 3, ATDEV_INT_CHAR, idx);        
+        snprintf_P(numIdx, 3, ATDEV_INT_CHAR, idx);
+        m_timeOut = ATDEV_SMS_TIMEOUT_DEL;
+    }
+    // Delete all
+    else {
+        m_timeOut = ATDEV_SMS_TIMEOUT_DELALL;
     }
 
     snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGD, numIdx, flag);
-    return this->waitDevice(this->sendATCmd());
+    return this->sendATCmd();
 }
 
 

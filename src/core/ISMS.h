@@ -36,6 +36,9 @@
 
 // Timeouts
 #define ATDEV_SMS_TIMEOUT_SEND 20000
+#define ATDEV_SMS_TIMEOUT_DELALL 10000
+#define ATDEV_SMS_TIMEOUT_DEL 5000
+#define ATDEV_SMS_TIMEOUT_LIST 5000
 
 /**
  * Object for store sms data

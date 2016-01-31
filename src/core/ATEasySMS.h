@@ -12,6 +12,7 @@
 
 // strings
 #define ATDEV_STR_CMGL PSTR("+CMGL:")
+#define ATDEV_STR_CMGR PSTR("+CMGR:")
 
 /**
  * Default AT SMS command handle object
