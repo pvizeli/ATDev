@@ -26,6 +26,11 @@ class ATEasySMS : public ISMS, public virtual ATDev
          */
         uint8_t doDeleteSMS(uint8_t idx, uint8_t flag);
 
+        /**
+         * Create a end buffer for CMGL command
+         */
+        void setCMGLEndBuffer();
+
     public:
 
         /**
@@ -34,7 +39,7 @@ class ATEasySMS : public ISMS, public virtual ATDev
         virtual uint8_t initializeSMS();
         virtual uint8_t sendSMS();
         virtual uint8_t receiveSMS(uint8_t idx);
-        virtual uint8_t readNextIdxSMS();
+        virtual uint16_t readNextIdxSMS(uint16_t lastIdx = 0);
 
         virtual uint8_t deleteSMS(uint8_t idx) {
             return this->doDeleteSMS(idx, ATDEV_OPT_CMGD_DEL_IDX);

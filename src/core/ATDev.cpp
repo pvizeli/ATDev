@@ -15,6 +15,20 @@ ATDev::ATDev()
     m_onModulePin   ^= m_onModulePin;
 }
 
+void ATDev::flushInput()
+{
+    // UART initialize?
+    if (m_hwSerial == NULL) {
+        return;
+    }
+
+    // Clear input Serial buffer
+    while (m_hwSerial->available() > 0) {
+        while (m_hwSerial->read() >= 0);
+        delay(ATDEV_FLUSH);
+    }
+}
+
 uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
 {
     uint32_t    isTimeOut;
@@ -53,10 +67,7 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
     if (m_cmdBuffer[0] != 0x00) {
 
         // Clear input Serial buffer
-        while (m_hwSerial->available() > 0) {
-            while (m_hwSerial->read() >= 0);
-            delay(ATDEV_FLUSH);
-        }
+        this->flushInput();
 
         // send command
         m_hwSerial->println(m_cmdBuffer);

@@ -90,28 +90,55 @@ uint8_t ATEasySMS::receiveSMS(uint8_t idx)
     return ATDEV_ERR_UNEXPECTED_RESULT;
 }
 
-uint8_t ATEasySMS::readNextIdxSMS()
+void ATEasySMS::setCMGLEndBuffer()
 {
-    // AT cmd
-    snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGL, ATDEV_OPT_CMGL_ALL);
-
     // Prepare answer end
     memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
     strncpy_P(m_endBuffer, ATDEV_STR_CMGL, ATDEV_BUFF_END_SIZE);
 
     // Timeout
     m_timeOut       = ATDEV_SMS_TIMEOUT_LIST;
+}
 
-    // check answer / +CMGL: 
-    if (this->sendATCmd(true) == ATDEV_OK && this->readLine() == ATDEV_OK) {
+uint16_t ATEasySMS::readNextIdxSMS(uint16_t lastIdx)
+{
+    int16_t nextIdx = -1;
 
-        // parse
-        if (this->parseInternalData() >= 0) {
-            return atoi(this->getParseElement(0));
+    // AT cmd
+    snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGL, ATDEV_OPT_CMGL_ALL);
+
+    do {
+        // Set +CMGL: as end
+        this->setCMGLEndBuffer();
+
+        // check answer / +CMGL: 
+        if (this->sendATCmd(true) == ATDEV_OK && this->readLine() == ATDEV_OK) {
+
+            // is state not REC UNREAD or REC READ
+            if (strstr_P(m_msgBuffer, ATDEV_OPT_CMGL_READ) == NULL &&
+                strstr_P(m_msgBuffer, ATDEV_OPT_CMGL_UNREAD) == NULL) {
+                continue;
+            }
+
+            // parse
+            if (this->parseInternalData() >= 0) {
+                nextIdx = atoi(this->getParseElement(0));
+            }
+            else {
+                nextIdx = ATDEV_SMS_NO_MSG;
+            }
         }
-    }
+        // error
+        else {
+            nextIdx = ATDEV_SMS_NO_MSG;
+        }
 
-    return ATDEV_SMS_NO_MSG;
+    } while (nextIdx < lastIdx && !(nextIdx == 0 && lastIdx == 0));
+
+    // flush other
+    this->flushInput();
+
+    return static_cast<uint16_t>(nextIdx);
 }
 
 uint8_t ATEasySMS::doDeleteSMS(uint8_t idx, uint8_t flag)

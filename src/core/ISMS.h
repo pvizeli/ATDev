@@ -32,7 +32,7 @@
 #define ATDEV_SMS_DEL_READED 0x03
 
 // Val
-#define ATDEV_SMS_NO_MSG 0xFF
+#define ATDEV_SMS_NO_MSG 0xFFFF
 
 // Timeouts
 #define ATDEV_SMS_TIMEOUT_SEND 20000
@@ -116,9 +116,11 @@ class ISMS
         /**
          * Get the next message index number from SIM storage.
          *
+         * @param lastIdx           Last readed index number for next ID
+         *                          or 0 if you want read from first store
          * @return                  Index nummber or ATDEV_SMS_NO_MSG
          */
-        virtual uint8_t readNextIdxSMS() = 0;
+        virtual uint16_t readNextIdxSMS(uint16_t lastIdx = 0) = 0;
 };
 
 #endif

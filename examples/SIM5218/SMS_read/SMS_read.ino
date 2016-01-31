@@ -11,7 +11,7 @@ uint16_t simPin = 0;
 
 void setup() {
   uint8_t networkStatus = 0;
-  uint8_t smsIdx        = 0;
+  uint16_t smsIdx       = 0;
 
   // Device data initialize
   modem.initialize(&Serial, 115200, 2);

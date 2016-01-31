@@ -130,6 +130,11 @@ class ATDev
         uint8_t readLine();
 
         /**
+         * Flush input buffer of AT device.
+         */
+        void flushInput();
+
+        /**
          * Parse data from msgBuffer with AT characteristic.
          *
          * The function is like strtok but for AT answer. It replace
