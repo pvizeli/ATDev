@@ -67,6 +67,7 @@
 #define ATDEV_FIRST_ATCMD_TIMEOUT 5000
 #define ATDEV_POWER_RETRY 10 
 #define ATDEV_WAIT 3000
+#define ATDEV_FLUSH 500
 
 /**
  * Object for handle all communication with ATDEV chip

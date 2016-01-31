@@ -59,6 +59,9 @@ uint8_t ATEasySMS::receiveSMS(uint8_t idx)
     // Cleanup SMS buffers
     m_smsData.cleanUp();
 
+    // Timeout
+    m_timeOut       = ATDEV_SMS_TIMEOUT_READ;
+
     // Send command
     if (this->sendATCmd(true) == ATDEV_OK && this->readLine() == ATDEV_OK) {
 
@@ -66,6 +69,9 @@ uint8_t ATEasySMS::receiveSMS(uint8_t idx)
         if (this->isCMSError() || this->parseInternalData() == 0) {
             return ATDEV_ERR_UNEXPECTED_RESULT;
         }
+
+        // Timeout
+        m_timeOut       = ATDEV_SMS_TIMEOUT_READ;
        
         // read sms text
         if (this->sendATCmd(false, m_smsData.m_message, ATDEV_SMS_TXT_SIZE) != ATDEV_OK) {
@@ -86,8 +92,6 @@ uint8_t ATEasySMS::receiveSMS(uint8_t idx)
 
 uint8_t ATEasySMS::readNextIdxSMS()
 {
-    uint8_t ret;
-
     // AT cmd
     snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGL, ATDEV_OPT_CMGL_ALL);
 
@@ -98,17 +102,8 @@ uint8_t ATEasySMS::readNextIdxSMS()
     // Timeout
     m_timeOut       = ATDEV_SMS_TIMEOUT_LIST;
 
-    // Send command
-    this->sendATCmd(true);
-
-    // read data
-    ret = this->readLine();
-
-    // Flush
-    while (m_hwSerial->read() >= 0);
-
     // check answer / +CMGL: 
-    if (ret == ATDEV_OK) {
+    if (this->sendATCmd(true) == ATDEV_OK && this->readLine() == ATDEV_OK) {
 
         // parse
         if (this->parseInternalData() >= 0) {

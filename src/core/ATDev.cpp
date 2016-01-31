@@ -53,7 +53,10 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
     if (m_cmdBuffer[0] != 0x00) {
 
         // Clear input Serial buffer
-        while (m_hwSerial->read() >= 0);
+        while (m_hwSerial->available() > 0) {
+            while (m_hwSerial->read() >= 0);
+            delay(ATDEV_FLUSH);
+        }
 
         // send command
         m_hwSerial->println(m_cmdBuffer);
