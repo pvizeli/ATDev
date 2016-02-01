@@ -24,7 +24,7 @@ class ATEasySMS : public ISMS, public virtual ATDev
         /**
          * Function to handle all SIM delete request
          */
-        uint8_t doDeleteSMS(uint8_t idx, uint8_t flag);
+        uint8_t doDeleteSMS(uint16_t idx, uint8_t flag);
 
         /**
          * Create a end buffer for CMGL command
@@ -38,15 +38,15 @@ class ATEasySMS : public ISMS, public virtual ATDev
          */
         virtual uint8_t initializeSMS();
         virtual uint8_t sendSMS();
-        virtual uint8_t receiveSMS(uint8_t idx);
+        virtual uint8_t receiveSMS(uint16_t idx);
         virtual uint16_t readNextIdxSMS(uint16_t lastIdx = 0);
 
-        virtual uint8_t deleteSMS(uint8_t idx) {
+        virtual uint8_t deleteSMS(uint16_t idx) {
             return this->doDeleteSMS(idx, ATDEV_OPT_CMGD_DEL_IDX);
         }
 
         virtual uint8_t deleteAllSMS(uint8_t flag) {
-            return this->doDeleteSMS(0x00, flag);
+            return this->doDeleteSMS(0x0000, flag);
         }
 };
 

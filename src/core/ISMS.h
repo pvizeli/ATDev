@@ -95,7 +95,7 @@ class ISMS
          * @param idx               Message index SIM store number
          * @return                  ATDEV Okay/Error
          */
-        virtual uint8_t receiveSMS(uint8_t idx) = 0;
+        virtual uint8_t receiveSMS(uint16_t idx) = 0;
 
         /**
          * Delete SMS from SIM storage.
@@ -103,7 +103,7 @@ class ISMS
          * @param idx               Message index SIM store number
          * @return                  ATDEV Okay/Error
          */
-        virtual uint8_t deleteSMS(uint8_t idx) = 0;
+        virtual uint8_t deleteSMS(uint16_t idx) = 0;
 
         /**
          * Delete all SMS from SIM storage.

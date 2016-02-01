@@ -48,7 +48,7 @@ uint8_t ATEasySMS::sendSMS()
     return ATDEV_ERR_UNEXPECTED_RESULT;
 }
 
-uint8_t ATEasySMS::receiveSMS(uint8_t idx)
+uint8_t ATEasySMS::receiveSMS(uint16_t idx)
 {
     snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGR, idx);
 
@@ -141,16 +141,16 @@ uint16_t ATEasySMS::readNextIdxSMS(uint16_t lastIdx)
     return static_cast<uint16_t>(nextIdx);
 }
 
-uint8_t ATEasySMS::doDeleteSMS(uint8_t idx, uint8_t flag)
+uint8_t ATEasySMS::doDeleteSMS(uint16_t idx, uint8_t flag)
 {
-    char numIdx[4];
+    char numIdx[5];
 
     // clean buffer
-    memset(numIdx, 0x00, 4);
+    memset(numIdx, 0x00, 5);
 
     // if IDX a number in store?
     if (flag == ATDEV_OPT_CMGD_DEL_IDX) {
-        snprintf_P(numIdx, 3, ATDEV_INT_CHAR, idx);
+        snprintf_P(numIdx, 4, ATDEV_INT_CHAR, idx);
         m_timeOut = ATDEV_SMS_TIMEOUT_DEL;
     }
     // Delete all
@@ -158,6 +158,7 @@ uint8_t ATEasySMS::doDeleteSMS(uint8_t idx, uint8_t flag)
         m_timeOut = ATDEV_SMS_TIMEOUT_DELALL;
     }
 
+    // prepare AT+CMGD=%d,%d
     snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGD, numIdx, flag);
     return this->sendATCmd();
 }
