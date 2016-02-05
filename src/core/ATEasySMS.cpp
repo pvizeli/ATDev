@@ -102,7 +102,7 @@ void ATEasySMS::setCMGLEndBuffer()
 
 uint16_t ATEasySMS::readNextIdxSMS(uint16_t lastIdx)
 {
-    int16_t nextIdx = -1;
+    uint16_t nextIdx = ATDEV_SMS_NO_MSG;
 
     // AT cmd
     snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGL, ATDEV_OPT_CMGL_ALL);
@@ -126,19 +126,21 @@ uint16_t ATEasySMS::readNextIdxSMS(uint16_t lastIdx)
             }
             else {
                 nextIdx = ATDEV_SMS_NO_MSG;
+                break;
             }
         }
         // error
         else {
             nextIdx = ATDEV_SMS_NO_MSG;
+            break;
         }
 
-    } while (nextIdx < lastIdx && !(nextIdx == 0 && lastIdx == 0));
+    } while ((nextIdx < lastIdx && !(nextIdx == 0 && lastIdx == 0)) || nextId == ATDEV_SMS_NO_MSG);
 
     // flush other
     this->flushInput();
 
-    return static_cast<uint16_t>(nextIdx);
+    return nextIdx;
 }
 
 uint8_t ATEasySMS::doDeleteSMS(uint16_t idx, uint8_t flag)
