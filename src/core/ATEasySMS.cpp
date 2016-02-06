@@ -79,7 +79,7 @@ uint8_t ATEasySMS::receiveSMS(uint16_t idx)
         }
 
         // copy number to buffer
-        strncpy(m_smsData.m_number, this->getParseElement(2), ATDEV_SMS_NUM_SIZE);
+        strncpy(m_smsData.m_number, this->getParseElement(1), ATDEV_SMS_NUM_SIZE);
 
         // set stop
         m_smsData.m_message[m_readPtr-5] = 0x00;
@@ -135,7 +135,7 @@ uint16_t ATEasySMS::readNextIdxSMS(uint16_t lastIdx)
             break;
         }
 
-    } while ((nextIdx < lastIdx && !(nextIdx == 0 && lastIdx == 0)) || nextId == ATDEV_SMS_NO_MSG);
+    } while ((nextIdx < lastIdx && !(nextIdx == 0 && lastIdx == 0)) || nextIdx == ATDEV_SMS_NO_MSG);
 
     // flush other
     this->flushInput();
