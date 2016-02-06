@@ -35,7 +35,7 @@ class _SIM5218_GPS :
         }
 
         virtual uint8_t onGPS() {
-            return this->onOffGPS(SIM5218_OPT_GPS_OFF, SIM5218_OPT_GPS_STD);
+            return this->onOffGPS(SIM5218_OPT_GPS_ON, SIM5218_OPT_GPS_STD);
         }
 
         virtual uint8_t offGPS() {
