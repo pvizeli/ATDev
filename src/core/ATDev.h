@@ -38,8 +38,8 @@
 // buffer size
 // the real size is SIZE+1 for char buffer
 #define ATDEV_BUFF_CMD_SIZE 32
-#define ATDEV_BUFF_MSG_SIZE 64
 #define ATDEV_BUFF_END_SIZE 16
+#define ATDEV_BUFF_MSG_SIZE 96
 
 // error codes
 #define ATDEV_ERR_BUFFER_FULL 0x12

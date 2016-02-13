@@ -25,6 +25,8 @@ uint8_t _SIM5218_GPS::receiveGPS()
     if (!m_isGPSOn) {
         return ATDEV_ERR_GPS_INIT;
     }
+
+    // GPS command
     strncpy_P(m_cmdBuffer, ATDEV_CMD_CGPSINFO, ATDEV_BUFF_CMD_SIZE);
 
     // AT+CPGSINFO
@@ -46,7 +48,7 @@ uint8_t _SIM5218_GPS::receiveGPS()
     longPos   = *(this->getParseElement(4));
 
     m_gpsData.convertNMEALatitude(this->getParseElement(1), latPos);
-    m_gpsData.convertNMEALongitude(this->getParseElement(2), longPos);
+    m_gpsData.convertNMEALongitude(this->getParseElement(3), longPos);
 
     m_gpsData.m_altitude = atof(this->getParseElement(7));
     m_gpsData.m_speed = atof(this->getParseElement(8));

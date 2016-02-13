@@ -27,7 +27,7 @@ void GPS_Data::convertNMEALatitude(char *lat, char pos)
 
     // export degre
     strncpy(buffer, lat, 2);
-    deg = atoi(lat);
+    deg = atoi(buffer);
 
     // export min
     min = atof(lat+2);
@@ -53,7 +53,7 @@ void GPS_Data::convertNMEALongitude(char *lat, char pos)
 
     // export degre
     strncpy(buffer, lat, 3);
-    deg = atoi(lat);
+    deg = atoi(buffer);
 
     // export min
     min = atof(lat+3);
