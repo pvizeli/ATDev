@@ -37,7 +37,7 @@
 
 // buffer size
 // the real size is SIZE+1 for char buffer
-#define ATDEV_BUFF_CMD_SIZE 32
+#define ATDEV_BUFF_CMD_SIZE 48
 #define ATDEV_BUFF_END_SIZE 16
 #define ATDEV_BUFF_MSG_SIZE 96
 
@@ -114,20 +114,53 @@ class ATDev
          * input Buffer. EndBuffer hold your stop AT answer. Default use
          * the standard AT answer end command.
          *
+         * You can use also the read buffer as stream buffer or circle buffer.
+         * It reset the buffer is it full or a line end is detect. So you can
+         * search a AT cmd in a stream of data without you have a full buffer
+         * error.
+         *
          * @param abruptEnd         Stop reading data immediately after
          *                          receive equal data as endBuffer
+         * @param streamBuff        Use buffer as circle buf with filtering
+         *                          line ends.
          * @param readBuf           Own read buffer insteat msgBuffer.
          * @param readBufSize       Size of his own read buffer.
          * @return                  ATDEV Okay/Error
          */
-        uint8_t sendATCmd(bool abruptEnd = false, char* readBuf = NULL, uint16_t readBufSize = ATDEV_BUFF_MSG_SIZE);
+        uint8_t sendATCmd(bool abruptEnd, bool streamBuff, char* readBuf, uint16_t readBufSize);
+
+        uint8_t sendATCmd() {
+            return this->sendATCmd(false, false, m_msgBuffer, ATDEV_BUFF_MSG_SIZE);
+        }
+
+        uint8_t sendATCmd(char* readBuf, uint16_t readBufSize) {
+            return this->sendATCmd(false, false, readBuf, readBufSize);
+        }
+
+        uint8_t sendATCmdAbrupt(char* readBuf, uint16_t readBufSize) {
+            return this->sendATCmd(true, false, readBuf, readBufSize);
+        }
+
+        uint8_t sendATCmdAbrupt() {
+            return this->sendATCmd(true, false, m_msgBuffer, ATDEV_BUFF_MSG_SIZE);
+        }
+
+        uint8_t sendATCmdStream() {
+            return this->sendATCmd(true, true, m_msgBuffer, ATDEV_BUFF_MSG_SIZE);
+        }
 
         /**
          * Read line from seriel device.
          *
+         * @param readBuf           Own read buffer insteat msgBuffer.
+         * @param readBufSize       Size of his own read buffer.
          * @return                  ATDEV Okay/Error
          */
-        uint8_t readLine();
+        uint8_t readLine(char* readBuf, uint16_t readBufSize);
+
+        uint8_t readLine() {
+            return this->readLine(m_msgBuffer, ATDEV_BUFF_MSG_SIZE);
+        }
 
         /**
          * Flush input buffer of AT device.
@@ -144,18 +177,30 @@ class ATDev
          * It support string. All data with "bla blu ble" will parse as one
          * element.
          *
+         * @param readBuf           Own read buffer insteat msgBuffer.
+         * @param readBufSize       Size of his own read buffer.
          * @preturn                 Count of elements that have create
          */
-        uint8_t parseInternalData();
+        uint8_t parseInternalData(char* readBuf, uint16_t readBufSize);
+
+        uint8_t parseInternalData() {
+            return this->parseInternalData(m_msgBuffer, ATDEV_BUFF_MSG_SIZE);
+        }
 
         /**
          * Get a element of the parsed msgBuffer.
          * @see parseInternalData();
          *
          * @param indx              The element they will have
+         * @param readBuf           Own read buffer insteat msgBuffer.
+         * @param readBufSize       Size of his own read buffer.
          * @return                  A pointer to this element in msgBuffer
          */
-        char* getParseElement(uint8_t indx);
+        char* getParseElement(uint8_t indx, char* readBuf, uint16_t readBufSize);
+
+        char* getParseElement(uint8_t indx) {
+            return this->getParseElement(indx, m_msgBuffer, ATDEV_BUFF_MSG_SIZE);
+        }
 
         /**
          * Wait function for severail AT commands.

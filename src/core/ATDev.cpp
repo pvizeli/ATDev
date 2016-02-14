@@ -29,7 +29,7 @@ void ATDev::flushInput()
     }
 }
 
-uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
+uint8_t ATDev::sendATCmd(bool abruptEnd, bool streamBuf, char* readBuf, uint16_t readBufSize)
 {
     uint32_t    isTimeOut;
     uint32_t    startTime;
@@ -43,12 +43,6 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
 
     ////
     // init buffers
-    // Set default buffer for internal handling
-    if (readBuf == NULL) {
-        readBuf = m_msgBuffer;
-    }
-
-    // init read Buffer
     memset(readBuf, 0x00, readBufSize);
 
     // init Counter
@@ -57,7 +51,6 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
     // is it the default AT end or had his own end?
     // set default end of AT communication
     if (!abruptEnd) {
-        memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
         strncpy_P(m_endBuffer, ATDEV_END_OK, ATDEV_BUFF_END_SIZE);    
     }
     endSize = strlen(m_endBuffer);
@@ -104,17 +97,30 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
         // if data in serial input buffer
         while (m_hwSerial->available()) {
 
-            // buffer is full
-            if (m_readPtr >= readBufSize) {
+            // buffer is full (not circle)
+            if (!streamBuf && m_readPtr >= readBufSize) {
+                memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
                 return ATDEV_ERR_BUFFER_FULL;
+            }
+
+            ////
+            // Circle buffer / Line end
+            if (streamBuf) {
+                // Buffer full or Line end detect
+                if (m_readPtr >= readBufSize || (m_readPtr > 0 && readBuf[m_readPtr -1] == ATDEV_CH_LF)) {
+                    memset(readBuf, 0x00, readBufSize);
+                    m_readPtr ^= m_readPtr;
+                }
             }
 
             // read into buffer
             readBuf[m_readPtr++] = m_hwSerial->read();
 
+            ////
             // if abrupt end of communication is set
             if (abruptEnd && m_readPtr >= endSize && 
                     strstr(&readBuf[m_readPtr - endSize], m_endBuffer) != 0) {
+                memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
                 return ATDEV_OK; 
             }
         }
@@ -122,11 +128,13 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
         ////
         // check is it the end of AT Command in answer buffer
         if (m_readPtr >= endSize && strstr(readBuf, m_endBuffer) != 0) {
+            memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
             return ATDEV_OK; 
         }
         // Error
         else if (m_readPtr >= ATDEV_END_ERROR_SIZE &&
                 strstr_P(readBuf, ATDEV_END_ERROR) != 0) {
+            memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
             return ATDEV_ERR_ERROR_RECEIVED;
         }
 
@@ -139,44 +147,44 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, char* readBuf, uint16_t readBufSize)
 
     } while ((isTimeOut > millis() && !over) || over); // timeout
 
+    memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
     return ATDEV_ERR_TIMEOUT;
 }
 
-uint8_t ATDev::readLine()
+uint8_t ATDev::readLine(char* readBuf, uint16_t readBufSize)
 {
     // CR LF to end buffer
-    memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
     strncpy_P(m_endBuffer, ATDEV_END_LINE, ATDEV_BUFF_END_SIZE);    
 
-    return this->sendATCmd(true);
+    return this->sendATCmdAbrupt(readBuf, readBufSize);
 }
 
-uint8_t ATDev::parseInternalData()
+uint8_t ATDev::parseInternalData(char* readBuf, uint16_t readBufSize)
 {
     bool    isString    = false;
     uint8_t params      = 0;
 
     // search hole string
-    for (uint16_t i = 0; i < ATDEV_BUFF_MSG_SIZE; i++) {
+    for (uint16_t i = 0; i < readBufSize; i++) {
 
         // end
-        if (m_msgBuffer[i] == 0x00) {
+        if (readBuf[i] == 0x00) {
             return params;
         }
         // is string "xy zyx"
-        else if (m_msgBuffer[i] == ATDEV_CH_IC) {
-            m_msgBuffer[i] = 0x00;
+        else if (readBuf[i] == ATDEV_CH_IC) {
+            readBuf[i] = 0x00;
             isString = !isString;
         }
         // ' ' or ',' or ':' replace with '\0'
-        else if (!isString && (m_msgBuffer[i] == ATDEV_CH_SP || 
-                m_msgBuffer[i] == ATDEV_CH_CO ||
-                m_msgBuffer[i] == ATDEV_CH_DD)) {
-            m_msgBuffer[i] = 0x00;
+        else if (!isString && (readBuf[i] == ATDEV_CH_SP || 
+                readBuf[i] == ATDEV_CH_CO ||
+                readBuf[i] == ATDEV_CH_DD)) {
+            readBuf[i] = 0x00;
         }
 
         // count
-        if (m_msgBuffer[i] == 0x00 && m_msgBuffer[i-1] != 0x00) {
+        if (readBuf[i] == 0x00 && readBuf[i-1] != 0x00) {
             params++;
         }
     }
@@ -184,21 +192,21 @@ uint8_t ATDev::parseInternalData()
     return params;
 }
 
-char* ATDev::getParseElement(uint8_t indx)
+char* ATDev::getParseElement(uint8_t indx, char* readBuf, uint16_t readBufSize)
 {
     uint8_t count = 0;
 
     // search hole string
-    for (uint16_t i = 0; i < ATDEV_BUFF_MSG_SIZE; i++) {
+    for (uint16_t i = 0; i < readBufSize; i++) {
 
         // find next position
-        if (m_msgBuffer[i] == 0x00 && i > 0 && m_msgBuffer[i-1] != 0x00) {
+        if (readBuf[i] == 0x00 && i > 0 && readBuf[i-1] != 0x00) {
             count++;
         }
 
         // found indx with next character
-        if (count == indx && m_msgBuffer[i] != 0x00) {
-            return &m_msgBuffer[i];
+        if (count == indx && readBuf[i] != 0x00) {
+            return &readBuf[i];
         }
     }
 

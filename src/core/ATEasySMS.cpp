@@ -29,10 +29,9 @@ uint8_t ATEasySMS::sendSMS()
 
     // Prepare answer
     m_endBuffer[0] = ATDEV_CH_AN; 
-    m_endBuffer[1] = 0x00; 
 
     // Send command
-    if (this->sendATCmd(true) == ATDEV_OK) {
+    if (this->sendATCmdAbrupt() == ATDEV_OK) {
 
         // Send SMS Data
         m_hwSerial->print(m_smsData.m_message);
@@ -53,7 +52,6 @@ uint8_t ATEasySMS::receiveSMS(uint16_t idx)
     snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGR, idx);
 
     // Prepare answer end
-    memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
     strncpy_P(m_endBuffer, ATDEV_STR_CMGR, ATDEV_BUFF_END_SIZE);
 
     // Cleanup SMS buffers
@@ -63,7 +61,7 @@ uint8_t ATEasySMS::receiveSMS(uint16_t idx)
     m_timeOut       = ATDEV_SMS_TIMEOUT_READ;
 
     // Send command
-    if (this->sendATCmd(true) == ATDEV_OK && this->readLine() == ATDEV_OK) {
+    if (this->sendATCmdAbrupt() == ATDEV_OK && this->readLine() == ATDEV_OK) {
 
         // header to smal / receive a error
         if (this->isCMSError() || this->parseInternalData() == 0) {
@@ -74,7 +72,7 @@ uint8_t ATEasySMS::receiveSMS(uint16_t idx)
         m_timeOut       = ATDEV_SMS_TIMEOUT_READ;
        
         // read sms text
-        if (this->sendATCmd(false, m_smsData.m_message, ATDEV_SMS_TXT_SIZE) != ATDEV_OK) {
+        if (this->sendATCmd(m_smsData.m_message, ATDEV_SMS_TXT_SIZE) != ATDEV_OK) {
             return ATDEV_ERR_UNEXPECTED_RESULT;
         }
 
@@ -93,7 +91,6 @@ uint8_t ATEasySMS::receiveSMS(uint16_t idx)
 void ATEasySMS::setCMGLEndBuffer()
 {
     // Prepare answer end
-    memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
     strncpy_P(m_endBuffer, ATDEV_STR_CMGL, ATDEV_BUFF_END_SIZE);
 
     // Timeout
@@ -112,7 +109,7 @@ uint16_t ATEasySMS::readNextIdxSMS(uint16_t lastIdx)
         this->setCMGLEndBuffer();
 
         // check answer / +CMGL: 
-        if (this->sendATCmd(true) == ATDEV_OK && this->readLine() == ATDEV_OK) {
+        if (this->sendATCmdStream() == ATDEV_OK && this->readLine() == ATDEV_OK) {
 
             // is state not REC UNREAD or REC READ
             if (strstr_P(m_msgBuffer, ATDEV_OPT_CMGL_READ) == NULL &&
