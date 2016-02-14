@@ -33,9 +33,9 @@ void setup() {
             Serial.println(F("Load GPS data:"));
 
             Serial.print(F("Latitude: "));
-            Serial.println(modem.m_gpsData.m_latitude);
+            Serial.println(modem.m_gpsData.m_latitude, 4);
             Serial.print(F("Longitude: "));
-            Serial.println(modem.m_gpsData.m_longitude);
+            Serial.println(modem.m_gpsData.m_longitude, 4);
             Serial.print(F("Altitude: "));
             Serial.println(modem.m_gpsData.m_altitude);
             Serial.print(F("Speed: "));
@@ -47,9 +47,9 @@ void setup() {
 
             // Google Map link
             Serial.print(F("https://www.google.com/maps?q="));
-            Serial.print(modem.m_gpsData.m_latitude);
+            Serial.print(modem.m_gpsData.m_latitude, 4);
             Serial.print(F(","));
-            Serial.println(modem.m_gpsData.m_longitude);
+            Serial.println(modem.m_gpsData.m_longitude, 4);
           }
           else if (gpsRet == ATDEV_ERR_GPS_DATA) {
             Serial.println(F("No GPS connection / data"));

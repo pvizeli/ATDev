@@ -1,6 +1,5 @@
 // Option
 #define SIM5218_USE_EASYSMS
-#define ATDEV_SMS_TXT_SIZE 80
 
 #include <ATDev_HW.h>
 

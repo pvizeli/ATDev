@@ -22,10 +22,8 @@
 
 // data size
 // the real size is SIZE+1 for char buffer
-# ifndef ATDEV_SMS_TXT_SIZE
-#  define ATDEV_SMS_TXT_SIZE 160
-# endif
-# define ATDEV_SMS_NUM_SIZE 15
+#define ATDEV_SMS_TXT_SIZE 165
+#define ATDEV_SMS_NUM_SIZE 15
 
 // option
 #define ATDEV_SMS_DEL_ALL 0x04
