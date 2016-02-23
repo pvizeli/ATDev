@@ -184,7 +184,7 @@ uint8_t ATDev::parseInternalData(char* readBuf, uint16_t readBufSize)
         }
 
         // count
-        if (readBuf[i] == 0x00 && readBuf[i-1] != 0x00) {
+        if (i > 0 && readBuf[i] == 0x00 && readBuf[i-1] != 0x00) {
             params++;
         }
     }
