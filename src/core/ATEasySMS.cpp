@@ -79,7 +79,8 @@ uint8_t ATEasySMS::receiveSMS(uint16_t idx)
         // copy number to buffer
         strncpy(m_smsData.m_number, this->getParseElement(1), ATDEV_SMS_NUM_SIZE);
 
-        // set stop
+        // trim AT controll data from buffer
+        this->trimATEnd(m_smsData.m_message, ATDEV_SMS_TXT_SIZE);
         m_smsData.m_message[m_readPtr-5] = 0x00;
 
         return ATDEV_OK;

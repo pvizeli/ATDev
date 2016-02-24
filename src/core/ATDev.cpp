@@ -222,6 +222,27 @@ uint8_t ATDev::waitDevice(uint8_t ret)
     return ret;
 }
 
+void ATDev::trimATEnd(char* readBuf, uint16_t readBufSize, uint16_t dataSize)
+{
+    uint16_t pos = dataSize -1;
+
+    // Search OK String
+    for ( ; pos > 0; --pos) {
+        if (strstr_P(readBuf + pos, ATDEV_END_OK) != NULL) {
+            --pos;
+            break;
+        }
+    }
+
+    // find
+    for ( ; pos > 0; --pos) {
+        if (readBuf[pos] != ATDEV_CH_CR && readBuf[pos] != ATDEV_CH_LF) {
+            memset(readBuf + pos +1, 0x00, readBufSize - pos -1);
+            break;
+        }
+    }
+}
+
 void ATDev::initialize(HardwareSerial *UART, long baudrate, uint8_t onPinMod)
 {
     m_hwSerial      = UART;

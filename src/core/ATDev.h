@@ -214,6 +214,18 @@ class ATDev
          */
         uint8_t waitDevice(uint8_t ret);
 
+        /**
+         * Trim AT End from a buffer.
+         *
+         * @param readBuf           Own read buffer insteat msgBuffer.
+         * @param readBufSize       Size of his own read buffer.
+         * @param dataSize          Who the last Data in Buffer.
+         */
+        void trimATEnd(char* readBuf, uint16_t readBufSize, uint16_t dataSize);
+
+        void trimATEnd(char* readBuf, uint16_t readBufSize) {
+            this->trimATEnd(readBuf, readBufSize, m_readPtr);
+        }
 
     public:
    
