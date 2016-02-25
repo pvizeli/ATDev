@@ -224,23 +224,37 @@ uint8_t ATDev::waitDevice(uint8_t ret)
 
 void ATDev::trimATEnd(char* readBuf, uint16_t readBufSize, uint16_t dataSize)
 {
-    uint16_t pos = dataSize -1;
+    bool        foundAT = false;
+    uint16_t    pos     = dataSize -2;
 
-    // Search OK String
+    // secure check
+    if (pos < 0) {
+        return;
+    }
+
+    // Search OK AT Answer String
     for ( ; pos > 0; --pos) {
         if (strstr_P(readBuf + pos, ATDEV_END_OK) != NULL) {
             --pos;
+            foundAT = true;
             break;
         }
     }
 
-    // find
+    // NO AT CMD found!
+    if (!foundAT) {
+        return;
+    }
+
+    // find next character they not for AT communication
     for ( ; pos > 0; --pos) {
         if (readBuf[pos] != ATDEV_CH_CR && readBuf[pos] != ATDEV_CH_LF) {
-            memset(readBuf + pos +1, 0x00, readBufSize - pos -1);
             break;
         }
     }
+
+    // clean AT communication controll characters
+    memset(readBuf + pos +1, 0x00, readBufSize - pos -1);
 }
 
 void ATDev::initialize(HardwareSerial *UART, long baudrate, uint8_t onPinMod)

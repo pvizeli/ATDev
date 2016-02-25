@@ -19,7 +19,7 @@ uint8_t _SIM5218_GPS::onOffGPS(uint8_t onOff, uint8_t opt)
 
 uint8_t _SIM5218_GPS::receiveGPS()
 {
-    char latPos, longPos;
+    char latPos, longPos, *date;
 
     // gps not running
     if (!m_isGPSOn) {
@@ -53,8 +53,20 @@ uint8_t _SIM5218_GPS::receiveGPS()
     m_gpsData.m_altitude = atof(this->getParseElement(7));
     m_gpsData.m_speed = atof(this->getParseElement(8));
 
-    strncpy(m_gpsData.m_date, this->getParseElement(5), ATDEV_GPS_DATE_SIZE);
     strncpy(m_gpsData.m_time, this->getParseElement(6), ATDEV_GPS_TIME_SIZE);
+
+    // convert Date
+    memset(m_gpsData.m_date, 0x00, ATDEV_GPS_DATE_SIZE);
+    date = this->getParseElement(5);
+
+    m_gpsData.m_date[0] = 0x32;
+    m_gpsData.m_date[2] = 0x30;
+    m_gpsData.m_date[3] = date[4];
+    m_gpsData.m_date[4] = date[5];
+    m_gpsData.m_date[5] = date[0];
+    m_gpsData.m_date[6] = date[1];
+    m_gpsData.m_date[7] = date[2];
+    m_gpsData.m_date[8] = date[3];
 
 
     return ATDEV_OK;
