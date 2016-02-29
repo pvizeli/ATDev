@@ -60,13 +60,13 @@ uint8_t _SIM5218_GPS::receiveGPS()
     date = this->getParseElement(5);
 
     m_gpsData.m_date[0] = 0x32;
-    m_gpsData.m_date[2] = 0x30;
-    m_gpsData.m_date[3] = date[4];
-    m_gpsData.m_date[4] = date[5];
-    m_gpsData.m_date[5] = date[0];
-    m_gpsData.m_date[6] = date[1];
-    m_gpsData.m_date[7] = date[2];
-    m_gpsData.m_date[8] = date[3];
+    m_gpsData.m_date[1] = 0x30;
+    m_gpsData.m_date[2] = date[4];
+    m_gpsData.m_date[3] = date[5];
+    m_gpsData.m_date[4] = date[0];
+    m_gpsData.m_date[5] = date[1];
+    m_gpsData.m_date[6] = date[2];
+    m_gpsData.m_date[7] = date[3];
 
 
     return ATDEV_OK;
