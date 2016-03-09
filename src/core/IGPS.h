@@ -7,7 +7,7 @@
 
 // data size
 // the real size is SIZE+1 for char buffer
-#define ATDEV_GPS_DATE_SIZE 6
+#define ATDEV_GPS_DATE_SIZE 8
 #define ATDEV_GPS_TIME_SIZE 8
 
 #define ATDEV_GPS_LATITUDE_N 0x4E
