@@ -159,7 +159,7 @@ uint8_t ATDev::readLine(char* readBuf, uint16_t readBufSize)
     return this->sendATCmdAbrupt(readBuf, readBufSize);
 }
 
-uint8_t ATDev::parseInternalData(char* readBuf, uint16_t readBufSize)
+uint8_t ATDev::parseATCmdData(char* readBuf, uint16_t readBufSize)
 {
     bool    isString    = false;
     uint8_t params      = 0;

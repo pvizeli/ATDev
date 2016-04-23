@@ -181,10 +181,10 @@ class ATDev
          * @param readBufSize       Size of his own read buffer.
          * @preturn                 Count of elements that have create
          */
-        uint8_t parseInternalData(char* readBuf, uint16_t readBufSize);
+        uint8_t parseATCmdData(char* readBuf, uint16_t readBufSize);
 
         uint8_t parseInternalData() {
-            return this->parseInternalData(m_msgBuffer, ATDEV_BUFF_MSG_SIZE);
+            return this->parseATCmdData(m_msgBuffer, ATDEV_BUFF_MSG_SIZE);
         }
 
         /**
