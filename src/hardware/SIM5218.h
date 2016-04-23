@@ -49,7 +49,8 @@ class _SIM5218_GPS :
  * Object for handle all communication with SIM5218 chip
  */
 class SIM5218 : 
-    public virtual ATDev
+    public virtual ATDev,
+    public ATCarrier
 #ifdef SIM5218_USE_EASYSMS
     ,public ATEasySMS
 #endif

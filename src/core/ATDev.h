@@ -20,8 +20,6 @@
 
 // commands
 #define ATDEV_CMD_AT PSTR("AT")
-#define ATDEV_CMD_CPIN PSTR("AT+CPIN=%d")
-#define ATDEV_CMD_CREG PSTR("AT+CREG?")
 
 // tools
 #define ATDEV_INT_CHAR PSTR("%d")
@@ -31,9 +29,6 @@
 #define ATDEV_END_LINE PSTR("\x0D\x0A")
 #define ATDEV_END_ERROR PSTR("ERROR")
 #define ATDEV_END_ERROR_SIZE 5
-
-// string
-#define ATDEV_STR_CMS PSTR("+CMS ERROR")
 
 // buffer size
 // the real size is SIZE+1 for char buffer
@@ -264,27 +259,6 @@ class ATDev
          * @return                  ATDEV Okay/Error
          */
         uint8_t isReady();
-
-        /**
-         * Unlock the SIM.
-         *
-         * @return                  ATDEV Okay/Error
-         */
-        uint8_t setSIMPin(uint16_t pin);
-
-        /**
-         * Get the network status of the device back.
-         *
-         * @return                  ATDEV network status or Okay/Error
-         */
-        uint8_t getNetworkStatus();
-
-        /**
-         * Parse a AT+CMS ERROR.
-         *
-         * @return              True if a error in msgBuffer receive.
-         */
-        bool isCMSError();
 };
 
 #endif

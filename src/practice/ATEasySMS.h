@@ -3,8 +3,8 @@
 #define ATEASYSMS_H
 
 // includes
-#include "ATDev.h"
-#include "ISMS.h"
+#include "../core/ATDev.h"
+#include "../core/ISMS.h"
 
 // commands
 #define ATDEV_CMD_CPMS PSTR("AT+CPMS=\"SM\",\"SM\",\"SM\"")

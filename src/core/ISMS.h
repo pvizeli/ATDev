@@ -32,6 +32,9 @@
 // Val
 #define ATDEV_SMS_NO_MSG 0xFFFF
 
+// string
+#define ATDEV_STR_CMS PSTR("+CMS ERROR")
+
 // Timeouts
 #define ATDEV_SMS_TIMEOUT_SEND 25000
 #define ATDEV_SMS_TIMEOUT_DELALL 10000
@@ -66,8 +69,17 @@ class SMS_Data
 /**
  * Object for handle all communication with ATDEV chip
  */
-class ISMS
+class ISMS : public virtual ATDev
 {
+    protected:
+
+        /**
+         * Parse a AT+CMS ERROR.
+         *
+         * @return              True if a error in msgBuffer receive.
+         */
+        bool isCMSError();
+
     public:
 
         /** SMS Object for receive/send sms */
