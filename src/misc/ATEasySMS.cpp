@@ -163,5 +163,14 @@ uint8_t ATEasySMS::doDeleteSMS(uint16_t idx, uint8_t flag)
     return this->sendATCmd();
 }
 
+bool ATEasySMS::isCMSError()
+{
+    // found "+CMS ERROR: %d"
+    if (strstr_P(m_msgBuffer, ATDEV_STR_CMS) != NULL) {
+        return true;
+    }
+
+    return false;
+}
 
 // vim: set sts=4 sw=4 ts=4 et:

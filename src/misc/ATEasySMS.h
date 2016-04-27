@@ -13,6 +13,7 @@
 // strings
 #define ATDEV_STR_CMGL PSTR("+CMGL:")
 #define ATDEV_STR_CMGR PSTR("+CMGR:")
+#define ATDEV_STR_CMS PSTR("+CMS ERROR")
 
 /**
  * Default AT SMS command handle object
@@ -30,6 +31,13 @@ class ATEasySMS : public ISMS, public virtual ATDev
          * Create a end buffer for CMGL command
          */
         void setCMGLEndBuffer();
+
+        /**
+         * Parse a AT+CMS ERROR.
+         *
+         * @return              True if a error in msgBuffer receive.
+         */
+        bool isCMSError();
 
     public:
 

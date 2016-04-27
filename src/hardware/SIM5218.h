@@ -49,12 +49,10 @@ class _SIM5218_GPS :
  * Object for handle all communication with SIM5218 chip
  */
 class SIM5218 : 
-#ifdef SIM5218_USE_ARDUINO
-    public ATArduino,
-#else
-    public virtual ATDev,
-#endif
     public ATCarrier
+#ifdef SIM5218_USE_ARDUINO
+    ,public ATArduino
+#endif
 #ifdef SIM5218_USE_EASYSMS
     ,public ATEasySMS
 #endif
