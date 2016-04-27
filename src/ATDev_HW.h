@@ -10,8 +10,11 @@
 #include "core/ISMS.h"
 #include "core/IGPS.h"
 
+// platform stuff
+#include "platform/ATArduino.h"
+
 // implementation
-#include "practice/ATEasySMS.h"
+#include "misc/ATEasySMS.h"
 
 // Hardware
 #include "hardware/SIM5218.h"

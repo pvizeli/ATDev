@@ -12,7 +12,6 @@ ATDev::ATDev()
 
     m_readPtr       ^= m_readPtr;
     m_timeOut       ^= m_timeOut;
-    m_onModulePin   ^= m_onModulePin;
 }
 
 void ATDev::flushInput()
@@ -255,47 +254,6 @@ void ATDev::trimATEnd(char* readBuf, uint16_t readBufSize, uint16_t dataSize)
 
     // clean AT communication controll characters
     memset(readBuf + pos +1, 0x00, readBufSize - pos -1);
-}
-
-void ATDev::initialize(HardwareSerial *UART, long baudrate, uint8_t onPinMod)
-{
-    m_hwSerial      = UART;
-    m_onModulePin   = onPinMod;
-
-    // init serial interface
-    pinMode(m_onModulePin, OUTPUT);
-    m_hwSerial->begin(baudrate);
-}
-
-uint8_t ATDev::onPower()
-{
-    // First AT CMD timeout
-    m_timeOut = ATDEV_FIRST_ATCMD_TIMEOUT;
-
-    // Wait for starting up modul
-    delay(m_timeOut);
-
-    if (this->isReady() != ATDEV_OK) {
-
-        digitalWrite(m_onModulePin, HIGH);
-        delay(3000);
-        digitalWrite(m_onModulePin, LOW);
-        delay(1000);
-
-        // check is modem response
-        for (uint8_t i = 0; i < ATDEV_POWER_RETRY; i++) {
-            if (this->isReady() == ATDEV_OK) {
-                return this->waitDevice(ATDEV_OK);
-            }
-        }
-    }
-    // power is allready on
-    else {
-        return ATDEV_OK;
-    }
-
-    // timeout
-    return ATDEV_ERR_TIMEOUT;
 }
 
 uint8_t ATDev::isReady()

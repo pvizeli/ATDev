@@ -49,14 +49,6 @@
 // OK
 #define ATDEV_OK 0x01
 
-// Network status
-#define ATDEV_NETSTAT_NOT_REGISTERED 0x00
-#define ATDEV_NETSTAT_REGISTERED 0x01
-#define ATDEV_NETSTAT_SEARCHING 0x02
-#define ATDEV_NETSTAT_DENIED 0x03
-#define ATDEV_NETSTAT_UNKNOWN 0x04
-#define ATDEV_NETSTAT_ROAMING 0x05
-
 // Time-Outs
 #define ATDEV_DEFAULT_TIMEOUT 3500
 #define ATDEV_FIRST_ATCMD_TIMEOUT 5000
@@ -86,9 +78,6 @@ class ATDev
 
         /** AT CMD read Buffer counter */
         uint16_t m_readPtr;
-
-        /** Possible a pin for power on the shield */
-        uint8_t m_onModulePin;
 
         /** Timeout for sendATCmd */
         uint16_t m_timeOut;
@@ -214,7 +203,8 @@ class ATDev
          *
          * @param readBuf           Own read buffer insteat msgBuffer.
          * @param readBufSize       Size of his own read buffer.
-         * @param dataSize          Who the last Data in Buffer.
+         * @param dataSize          Where the last Data in Buffer, pointer to
+         *                          the last readed character in the buffer.
          */
         void trimATEnd(char* readBuf, uint16_t readBufSize, uint16_t dataSize);
 
@@ -236,21 +226,10 @@ class ATDev
          * ATDev initialize all system relevant configs.
          *
          * @param UART              Serial object to device
-         * @param baudrate          Serial baudrate
-         * @param onPinMod          PIN for on/off the shield or 0
-         * @return                  ATDEV Okay/Error
          */
-        void initialize(HardwareSerial *UART, long baudrate, uint8_t onPinMod);
-
-        /**
-         * Power On and check communication to device
-         *
-         * Is modPin not equal to 0 it will power off and check for AT
-         * communication and is the device ready for commands.
-         *
-         * @return                  ATDEV Okay/Error
-         */
-        uint8_t onPower();
+        void initialize(HardwareSerial *UART) {
+            m_hwSerial = UART;
+        }
 
         /**
          * Send AT command to device for status check.

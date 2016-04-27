@@ -1,3 +1,6 @@
+
+#define SIM5218_USE_ARDUINO
+
 #include <ATDev_HW.h>
 
 SIM5218 modem;
@@ -9,10 +12,10 @@ void setup() {
   uint8_t networkStatus = 0;
 
   // Device data initialize
-  modem.initialize(&Serial, 115200, 2);
+  modem.initialize(&Serial, 115200);
 
   // Power on the Shield && init
-  if (modem.onPower() == ATDEV_OK) {
+  if (modem.onPower(2) == ATDEV_OK) {
 
     // set PIN is avilable
     if (simPin > 0) {

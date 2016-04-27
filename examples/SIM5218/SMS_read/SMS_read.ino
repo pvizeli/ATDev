@@ -1,4 +1,5 @@
 // Option
+#define SIM5218_USE_ARDUINO
 #define SIM5218_USE_EASYSMS
 
 #include <ATDev_HW.h>
@@ -13,10 +14,10 @@ void setup() {
   uint16_t smsIdx       = 0;
 
   // Device data initialize
-  modem.initialize(&Serial, 115200, 2);
+  modem.initialize(&Serial, 115200);
 
   // Power on the Shield && init
-  if (modem.onPower() == ATDEV_OK) {
+  if (modem.onPower(2) == ATDEV_OK) {
 
     // set PIN is avilable
     if (simPin > 0) {

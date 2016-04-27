@@ -22,7 +22,7 @@ class _SIM5218_GPS :
 {
     protected :
         /**
-         *
+         * Activate or disable GPS handling on chip
          */
         uint8_t onOffGPS(uint8_t onOff, uint8_t opt);
 
@@ -49,7 +49,11 @@ class _SIM5218_GPS :
  * Object for handle all communication with SIM5218 chip
  */
 class SIM5218 : 
+#ifdef SIM5218_USE_ARDUINO
+    public ATArduino,
+#else
     public virtual ATDev,
+#endif
     public ATCarrier
 #ifdef SIM5218_USE_EASYSMS
     ,public ATEasySMS

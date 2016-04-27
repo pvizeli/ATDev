@@ -1,4 +1,5 @@
 // Option
+#define SIM5218_USE_ARDUINO
 #define SIM5218_USE_GPS
 
 #include <ATDev_HW.h>
@@ -12,10 +13,10 @@ void setup() {
   uint8_t gpsRet = 0;
   
   // Device data initialize
-  modem.initialize(&Serial, 115200, 2);
+  modem.initialize(&Serial, 115200);
 
   // Power on the Shield && init
-  if (modem.onPower() == ATDEV_OK) {
+  if (modem.onPower(2) == ATDEV_OK) {
 
     // Init GPS
     if (modem.initializeGPS() == ATDEV_OK) {
