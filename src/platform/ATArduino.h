@@ -5,6 +5,10 @@
 // includes
 #include "../ATDev_HW.h"
 
+// timeouts
+#define ATDEV_FIRST_ATCMD_TIMEOUT 5000
+#define ATDEV_POWER_RETRY 10
+
 /**
  * Object for handle all communication with ATDEV chip from Arduino IDE
  *
