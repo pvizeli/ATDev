@@ -10,7 +10,8 @@ SIM5218 modem;
 #define TIME_WAIT 20000
 
 void setup() {
-  uint8_t gpsRet = 0;
+  uint8_t       gpsRet      = 0;
+  ATData_GPS    gpsData;
   
   // Device data initialize
   modem.initialize(&Serial, 115200);
@@ -28,29 +29,29 @@ void setup() {
         for (uint8_t i = 0; i < COUNT_RECEIVE; i++) {
 
           // load data
-          gpsRet = modem.receiveGPS();
+          gpsRet = modem.receiveGPS(&gpsData);
 
           if (gpsRet == ATDEV_OK) {
             Serial.println(F("Load GPS data:"));
 
             Serial.print(F("Latitude: "));
-            Serial.println(modem.m_gpsData.m_latitude, 4);
+            Serial.println(gpsData.m_latitude, 4);
             Serial.print(F("Longitude: "));
-            Serial.println(modem.m_gpsData.m_longitude, 4);
+            Serial.println(gpsData.m_longitude, 4);
             Serial.print(F("Altitude: "));
-            Serial.println(modem.m_gpsData.m_altitude);
+            Serial.println(gpsData.m_altitude);
             Serial.print(F("Speed: "));
-            Serial.println(modem.m_gpsData.m_speed);
+            Serial.println(gpsData.m_speed);
             Serial.print(F("Date: "));
-            Serial.println(modem.m_gpsData.m_date);
+            Serial.println(gpsData.m_date);
             Serial.print(F("Time: "));
-            Serial.println(modem.m_gpsData.m_time);
+            Serial.println(gpsData.m_time);
 
             // Google Map link
             Serial.print(F("https://www.google.com/maps?q="));
-            Serial.print(modem.m_gpsData.m_latitude, 4);
+            Serial.print(gpsData.m_latitude, 4);
             Serial.print(F(","));
-            Serial.println(modem.m_gpsData.m_longitude, 4);
+            Serial.println(gpsData.m_longitude, 4);
           }
           else if (gpsRet == ATDEV_ERR_GPS_DATA) {
             Serial.println(F("No GPS connection / data"));

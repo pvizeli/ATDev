@@ -42,7 +42,7 @@ class _SIM5218_GPS :
             return this->onOffGPS(SIM5218_OPT_GPS_OFF, SIM5218_OPT_GPS_STD);
         }
 
-        virtual uint8_t receiveGPS();
+        virtual uint8_t receiveGPS(ATData_GPS *gps);
 };
 
 /**

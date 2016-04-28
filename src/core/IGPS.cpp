@@ -2,7 +2,7 @@
 #include "IGPS.h"
 
 
-void GPS_Data::cleanUp()
+void ATData_GPS::cleanUp()
 {
     memset(m_date, 0x00, ATDEV_GPS_DATE_SIZE + 1);
     memset(m_time, 0x00, ATDEV_GPS_TIME_SIZE + 1);
@@ -16,7 +16,7 @@ void GPS_Data::cleanUp()
     m_speed         = 0;
 }
 
-void GPS_Data::convertNMEALatitude(char *lat, char pos)
+void ATData_GPS::convertNMEALatitude(char *lat, char pos)
 {
     uint16_t    deg;
     double      min;
@@ -42,7 +42,7 @@ void GPS_Data::convertNMEALatitude(char *lat, char pos)
     }
 }
 
-void GPS_Data::convertNMEALongitude(char *lat, char pos)
+void ATData_GPS::convertNMEALongitude(char *lat, char pos)
 {
     uint16_t    deg;
     double      min;
