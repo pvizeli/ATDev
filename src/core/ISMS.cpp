@@ -1,11 +1,35 @@
 
 #include "ISMS.h"
 
-
-void SMS_Data::cleanUp()
+ATData_SMS::ATData_SMS()
 {
-    memset(m_number, 0, ATDEV_SMS_NUM_SIZE + 1);
-    memset(m_message, 0, ATDEV_SMS_TXT_SIZE + 1);
+    m_number        = NULL;
+    m_message       = NULL;
+
+    m_numberSize    ^= m_numberSize;
+    m_messageSize   ^= m_messageSize;
+}
+
+ATData_SMS::ATData_SMS(char *number, uint8_t numberSize, 
+                       char *message, uint16_t messageSize) :
+    m_number(number),
+    m_numberSize(numberSize),
+    m_message(message),
+    m_messageSize(messageSize)
+{
+    this->cleanUp();
+}
+
+void ATData_SMS::cleanUp()
+{
+    // not init
+    if (m_number == NULL || m_message == NULL) {
+        return;
+    }
+
+    // cleanup
+    memset(m_number, 0x00, m_numberSize);
+    memset(m_message, 0x00, m_messageSize);
 }
 
 

@@ -18,10 +18,10 @@
 /**
  * Object for store gps data
  */
-class GPS_Data
+class ATData_GPS
 {
     public:
-        GPS_Data() {
+        ATData_GPS() {
             this->cleanUp();
         }
 
@@ -92,9 +92,6 @@ class IGPS
             m_isGPSOn = false;
         }
 
-        /** GPS Object for store gps data */
-        GPS_Data m_gpsData;
-
         /**
          * Initiialize the GPS module.
          *
@@ -119,9 +116,10 @@ class IGPS
         /**
          * Receive GPS updates from device.
          *
+         * @param gps               GPS Data object
          * @return                  ATDEV Okay/Error
          */
-        virtual uint8_t receiveGPS() = 0;
+        virtual uint8_t receiveGPS(ATData_GPS *gps) = 0;
 };
 
 #endif

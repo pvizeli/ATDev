@@ -1,20 +1,21 @@
 // Option
 #define SIM5218_USE_ARDUINO
-#define SIM5218_USE_EASYSMS
+#define SIM5218_USE_SMS
 
 #include <ATDev_HW.h>
 
 SIM5218 modem;
 
 // Text & data
-#define MY_SMS_BODY PSTR("Hello world! That is my SMS :P")
-#define MY_SMS_NUMBER PSTR("")
+char smsText[]    = "Hello world! That is my SMS :P";
+char smsNumber[]  = "";
 
 // PIN code
 uint16_t simPin = 0;
 
 void setup() {
   uint8_t networkStatus = 0;
+  ATData_SMS mySMS(smsNumber, strlen(smsNumber), smsText, strlen(smsText));
 
   // Device data initialize
   modem.initialize(&Serial, 115200);
@@ -37,12 +38,9 @@ void setup() {
       Serial.println(F("Modem connected with carrier"));
 
       if (modem.initializeSMS() == ATDEV_OK) {
-        // Prepare sms data
-        strncpy_P(modem.m_smsData.m_number, MY_SMS_NUMBER, ATDEV_SMS_NUM_SIZE);
-        strncpy_P(modem.m_smsData.m_message, MY_SMS_BODY, ATDEV_SMS_TXT_SIZE);
   
         // send SMS
-        if (modem.sendSMS() == ATDEV_OK) {
+        if (modem.sendSMS(&mySMS) == ATDEV_OK) {
           Serial.println(F("SMS send"));
         }
         else {

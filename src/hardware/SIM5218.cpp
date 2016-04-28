@@ -17,7 +17,7 @@ uint8_t _SIM5218_GPS::onOffGPS(uint8_t onOff, uint8_t opt)
     return this->waitDevice(ret);
 }
 
-uint8_t _SIM5218_GPS::receiveGPS()
+uint8_t _SIM5218_GPS::receiveGPS(ATData_GPS *gps)
 {
     char latPos, longPos, *date;
 
@@ -41,32 +41,32 @@ uint8_t _SIM5218_GPS::receiveGPS()
 
     ////
     // Parse GPS Data to gpsData class
-    m_gpsData.cleanUp();
+    gps->cleanUp();
 
     // Convert format from NMEA
     latPos    = *(this->getParseElement(2));
     longPos   = *(this->getParseElement(4));
 
-    m_gpsData.convertNMEALatitude(this->getParseElement(1), latPos);
-    m_gpsData.convertNMEALongitude(this->getParseElement(3), longPos);
+    gps->convertNMEALatitude(this->getParseElement(1), latPos);
+    gps->convertNMEALongitude(this->getParseElement(3), longPos);
 
-    m_gpsData.m_altitude = atof(this->getParseElement(7));
-    m_gpsData.m_speed = atof(this->getParseElement(8));
+    gps->m_altitude = atof(this->getParseElement(7));
+    gps->m_speed = atof(this->getParseElement(8));
 
-    strncpy(m_gpsData.m_time, this->getParseElement(6), ATDEV_GPS_TIME_SIZE);
+    strncpy(gps->m_time, this->getParseElement(6), ATDEV_GPS_TIME_SIZE);
 
     // convert Date
-    memset(m_gpsData.m_date, 0x00, ATDEV_GPS_DATE_SIZE);
+    memset(gps->m_date, 0x00, ATDEV_GPS_DATE_SIZE);
     date = this->getParseElement(5);
 
-    m_gpsData.m_date[0] = 0x32;
-    m_gpsData.m_date[1] = 0x30;
-    m_gpsData.m_date[2] = date[4];
-    m_gpsData.m_date[3] = date[5];
-    m_gpsData.m_date[4] = date[0];
-    m_gpsData.m_date[5] = date[1];
-    m_gpsData.m_date[6] = date[2];
-    m_gpsData.m_date[7] = date[3];
+    gps->m_date[0] = 0x32;
+    gps->m_date[1] = 0x30;
+    gps->m_date[2] = date[4];
+    gps->m_date[3] = date[5];
+    gps->m_date[4] = date[0];
+    gps->m_date[5] = date[1];
+    gps->m_date[6] = date[2];
+    gps->m_date[7] = date[3];
 
 
     return ATDEV_OK;

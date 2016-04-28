@@ -42,7 +42,7 @@ class _SIM5218_GPS :
             return this->onOffGPS(SIM5218_OPT_GPS_OFF, SIM5218_OPT_GPS_STD);
         }
 
-        virtual uint8_t receiveGPS();
+        virtual uint8_t receiveGPS(ATData_GPS *gps);
 };
 
 /**
@@ -53,8 +53,8 @@ class SIM5218 :
 #ifdef SIM5218_USE_ARDUINO
     ,public ATArduino
 #endif
-#ifdef SIM5218_USE_EASYSMS
-    ,public ATEasySMS
+#ifdef SIM5218_USE_SMS
+    ,public ATSMS
 #endif
 #ifdef SIM5218_USE_GPS
     ,public _SIM5218_GPS

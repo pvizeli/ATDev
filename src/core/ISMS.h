@@ -20,11 +20,6 @@
 #define ATDEV_OPT_CMGL_READ PSTR("REC READ")
 #define ATDEV_OPT_CMGL_ALL PSTR("ALL")
 
-// data size
-// the real size is SIZE+1 for char buffer
-#define ATDEV_SMS_TXT_SIZE 165
-#define ATDEV_SMS_NUM_SIZE 15
-
 // option
 #define ATDEV_SMS_DEL_ALL 0x04
 #define ATDEV_SMS_DEL_READED 0x03
@@ -42,18 +37,36 @@
 /**
  * Object for store sms data
  */
-class SMS_Data
+class ATData_SMS
 {
     public:
-        SMS_Data() {
-            this->cleanUp();
-        }
+        /**
+         * Init members with 0
+         */
+        ATData_SMS();
+
+        /**
+         * Init members with params
+         *
+         * @param number            Pointer to number buffer
+         * @param numberSize        Size of number buffer
+         * @param message           Pointer to message buffer
+         * @param messageSize       Size of message buffer
+         */
+        ATData_SMS(char *number, uint8_t numberSize, 
+                   char *message, uint16_t messageSize);
 
         /** Phone number string */
-        char m_number[ATDEV_SMS_NUM_SIZE + 1];
+        char        *m_number;
+
+        /** Buffer size of number string */
+        uint8_t     m_numberSize;
 
         /** SMS body string */
-        char m_message[ATDEV_SMS_TXT_SIZE + 1];
+        char        *m_message;
+
+        /** Buffer size of message string */
+        uint16_t    m_messageSize;
 
         /**
          * Cleanup all buffers.
@@ -66,12 +79,9 @@ class SMS_Data
 /**
  * Object for handle all communication with ATDEV chip
  */
-class ISMS : public virtual ATDev
+class ISMS
 {
     public:
-
-        /** SMS Object for receive/send sms */
-        SMS_Data m_smsData;
 
         /**
          * Initialize the AT device for handle SMS.
@@ -81,19 +91,21 @@ class ISMS : public virtual ATDev
         virtual uint8_t initializeSMS() = 0;
 
         /**
-         * Send SMS that store in @see m_smsData.
+         * Send a SMS.
          *
+         * @param sms               SMS they will send
          * @return                  ATDEV Okay/Error
          */
-        virtual uint8_t sendSMS() = 0;
+        virtual uint8_t sendSMS(ATData_SMS *sms) = 0;
 
         /**
-         * Receive SMS from SIM to @see m_smsData.
+         * Receive SMS from SIM.
          *
+         * @param sms               Write SMS data to this object
          * @param idx               Message index SIM store number
          * @return                  ATDEV Okay/Error
          */
-        virtual uint8_t receiveSMS(uint16_t idx) = 0;
+        virtual uint8_t receiveSMS(ATData_SMS *sms, uint16_t idx) = 0;
 
         /**
          * Delete SMS from SIM storage.
