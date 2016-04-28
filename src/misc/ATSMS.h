@@ -1,6 +1,6 @@
 
-#ifndef ATEASYSMS_H
-#define ATEASYSMS_H
+#ifndef ATSMS_H
+#define ATSMS_H
 
 // includes
 #include "../core/ATDev.h"
@@ -18,7 +18,7 @@
 /**
  * Default AT SMS command handle object
  */
-class ATEasySMS : public ISMS, public virtual ATDev
+class ATSMS : public ISMS, public virtual ATDev
 {
     protected:
         
@@ -45,8 +45,8 @@ class ATEasySMS : public ISMS, public virtual ATDev
          * Implement from @see ISMS
          */
         virtual uint8_t initializeSMS();
-        virtual uint8_t sendSMS();
-        virtual uint8_t receiveSMS(uint16_t idx);
+        virtual uint8_t sendSMS(ATData_SMS *sms);
+        virtual uint8_t receiveSMS(ATData_SMS *sms, uint16_t idx);
         virtual uint16_t readNextIdxSMS(uint16_t lastIdx = 0);
 
         virtual uint8_t deleteSMS(uint16_t idx) {

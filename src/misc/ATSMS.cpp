@@ -1,7 +1,7 @@
 
-#include "ATEasySMS.h"
+#include "ATSMS.h"
 
-uint8_t ATEasySMS::initializeSMS()
+uint8_t ATSMS::initializeSMS()
 {
     ////
     // set text mode
@@ -23,9 +23,9 @@ uint8_t ATEasySMS::initializeSMS()
     return this->waitDevice(ATDEV_OK);
 }
 
-uint8_t ATEasySMS::sendSMS()
+uint8_t ATSMS::sendSMS(ATData_SMS *sms)
 {
-    snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGS, m_smsData.m_number);
+    snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGS, sms->m_number);
 
     // Prepare answer
     m_endBuffer[0] = ATDEV_CH_AN; 
@@ -34,7 +34,7 @@ uint8_t ATEasySMS::sendSMS()
     if (this->sendATCmdAbrupt() == ATDEV_OK) {
 
         // Send SMS Data
-        m_hwSerial->print(m_smsData.m_message);
+        m_hwSerial->print(sms->m_message);
 
         // generate SMS end
         m_cmdBuffer[0] = ATDEV_CH_END;
@@ -47,7 +47,7 @@ uint8_t ATEasySMS::sendSMS()
     return ATDEV_ERR_UNEXPECTED_RESULT;
 }
 
-uint8_t ATEasySMS::receiveSMS(uint16_t idx)
+uint8_t ATSMS::receiveSMS(ATData_SMS *sms, uint16_t idx)
 {
     snprintf_P(m_cmdBuffer, ATDEV_BUFF_CMD_SIZE, ATDEV_CMD_CMGR, idx);
 
@@ -55,7 +55,7 @@ uint8_t ATEasySMS::receiveSMS(uint16_t idx)
     strncpy_P(m_endBuffer, ATDEV_STR_CMGR, ATDEV_BUFF_END_SIZE);
 
     // Cleanup SMS buffers
-    m_smsData.cleanUp();
+    sms->cleanUp();
 
     // Timeout
     m_timeOut       = ATDEV_SMS_TIMEOUT_READ;
@@ -72,16 +72,15 @@ uint8_t ATEasySMS::receiveSMS(uint16_t idx)
         m_timeOut       = ATDEV_SMS_TIMEOUT_READ;
        
         // read sms text
-        if (this->sendATCmd(m_smsData.m_message, ATDEV_SMS_TXT_SIZE) != ATDEV_OK) {
+        if (this->sendATCmd(sms->m_message, sms->m_messageSize -1) != ATDEV_OK) {
             return ATDEV_ERR_UNEXPECTED_RESULT;
         }
 
         // copy number to buffer
-        strncpy(m_smsData.m_number, this->getParseElement(1), ATDEV_SMS_NUM_SIZE);
+        strncpy(sms->m_number, this->getParseElement(1), sms->m_numberSize -1);
 
         // trim AT controll data from buffer
-        this->trimATEnd(m_smsData.m_message, ATDEV_SMS_TXT_SIZE);
-        m_smsData.m_message[m_readPtr-5] = 0x00;
+        this->trimATEnd(sms->m_message, sms->m_messageSize);
 
         return ATDEV_OK;
     }
@@ -89,7 +88,7 @@ uint8_t ATEasySMS::receiveSMS(uint16_t idx)
     return ATDEV_ERR_UNEXPECTED_RESULT;
 }
 
-void ATEasySMS::setCMGLEndBuffer()
+void ATSMS::setCMGLEndBuffer()
 {
     // Prepare answer end
     strncpy_P(m_endBuffer, ATDEV_STR_CMGL, ATDEV_BUFF_END_SIZE);
@@ -98,7 +97,7 @@ void ATEasySMS::setCMGLEndBuffer()
     m_timeOut       = ATDEV_SMS_TIMEOUT_LIST;
 }
 
-uint16_t ATEasySMS::readNextIdxSMS(uint16_t lastIdx)
+uint16_t ATSMS::readNextIdxSMS(uint16_t lastIdx)
 {
     uint16_t nextIdx = ATDEV_SMS_NO_MSG;
 
@@ -141,7 +140,7 @@ uint16_t ATEasySMS::readNextIdxSMS(uint16_t lastIdx)
     return nextIdx;
 }
 
-uint8_t ATEasySMS::doDeleteSMS(uint16_t idx, uint8_t flag)
+uint8_t ATSMS::doDeleteSMS(uint16_t idx, uint8_t flag)
 {
     char numIdx[5];
 
@@ -163,7 +162,7 @@ uint8_t ATEasySMS::doDeleteSMS(uint16_t idx, uint8_t flag)
     return this->sendATCmd();
 }
 
-bool ATEasySMS::isCMSError()
+bool ATSMS::isCMSError()
 {
     // found "+CMS ERROR: %d"
     if (strstr_P(m_msgBuffer, ATDEV_STR_CMS) != NULL) {

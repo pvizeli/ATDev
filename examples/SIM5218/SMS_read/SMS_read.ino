@@ -1,10 +1,13 @@
 // Option
 #define SIM5218_USE_ARDUINO
-#define SIM5218_USE_EASYSMS
+#define SIM5218_USE_SMS
 
 #include <ATDev_HW.h>
 
 SIM5218 modem;
+
+char numberBuf[ATDEV_DEFAULT_NUM_SIZE];
+char messageBuf[ATDEV_DEFAULT_SMSTXT_SIZE];
 
 // PIN code
 uint16_t simPin = 0;
@@ -12,6 +15,8 @@ uint16_t simPin = 0;
 void setup() {
   uint8_t networkStatus = 0;
   uint16_t smsIdx       = 0;
+  ATData_SMS smsData(numberBuf, ATDEV_DEFAULT_NUM_SIZE, 
+                     messageBuf, ATDEV_DEFAULT_SMSTXT_SIZE);
 
   // Device data initialize
   modem.initialize(&Serial, 115200);
@@ -43,10 +48,10 @@ void setup() {
           if (smsIdx != ATDEV_SMS_NO_MSG) {
 
             // read sms into SRAM
-            if (modem.receiveSMS(smsIdx) == ATDEV_OK) {
+            if (modem.receiveSMS(&smsData, smsIdx) == ATDEV_OK) {
               Serial.print(F("Number: "));
-              Serial.println(modem.m_smsData.m_number);
-              Serial.println(modem.m_smsData.m_message);
+              Serial.println(smsData.m_number);
+              Serial.println(smsData.m_message);
             }
             else {
               Serial.println(F("readSMS fail!"));

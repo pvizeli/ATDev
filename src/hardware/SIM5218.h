@@ -53,8 +53,8 @@ class SIM5218 :
 #ifdef SIM5218_USE_ARDUINO
     ,public ATArduino
 #endif
-#ifdef SIM5218_USE_EASYSMS
-    ,public ATEasySMS
+#ifdef SIM5218_USE_SMS
+    ,public ATSMS
 #endif
 #ifdef SIM5218_USE_GPS
     ,public _SIM5218_GPS
