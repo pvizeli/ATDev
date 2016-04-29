@@ -3,7 +3,7 @@
 #define IGPS_H
 
 // include
-#include "ATDev.h"
+#include "../core/ATDev.h"
 
 // data size
 // the real size is SIZE+1 for char buffer
