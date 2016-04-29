@@ -3,7 +3,7 @@
 #define ATARDUINO_H
 
 // includes
-#include "../ATDev_HW.h"
+#include "../core/ATDev.h"
 
 // timeouts
 #define ATDEV_FIRST_ATCMD_TIMEOUT 5000
