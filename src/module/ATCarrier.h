@@ -3,7 +3,7 @@
 #define ATCARRIER_H
 
 // includes
-#include "ATDev.h"
+#include "../core/ATDev.h"
 
 // commands
 #define ATDEV_CMD_CPIN PSTR("AT+CPIN=%d")

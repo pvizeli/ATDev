@@ -8,17 +8,20 @@
 
 // core
 #include "core/ATDev.h"
-#include "core/ATCarrier.h"
 
 // interface
-#include "core/ISMS.h"
-#include "core/IGPS.h"
+#include "interface/ISMS.h"
+#include "interface/IGPS.h"
 
-// platform stuff
+// module
+#include "module/ATCarrier.h"
+#include "module/ATSMS.h"
+
+// platform
 #include "platform/ATArduino.h"
 
-// implementation
-#include "misc/ATSMS.h"
+// misc
+
 
 // Hardware
 #include "hardware/SIM5218.h"
