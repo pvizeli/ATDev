@@ -3,7 +3,7 @@
 #define ISMS_H
 
 // include
-# include "ATDev.h"
+# include "../core/ATDev.h"
 
 // commands
 #define ATDEV_CMD_CMGS PSTR("AT+CMGS=\"%s\"")
