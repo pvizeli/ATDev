@@ -60,8 +60,6 @@ void ATDevAsync::processDataAsync(uint32_t timeout)
     uint32_t    startTime;
     bool        over;
 
-    // Generate end buffer
-    m_endBuffer[0] = ATDEV_CH_DD;
 
     ////
     // Calc Timeout
@@ -79,7 +77,10 @@ void ATDevAsync::processDataAsync(uint32_t timeout)
     ////
     // process answer
     do {
+        // Generate end buffer
+        m_endBuffer[0] = ATDEV_CH_DD;
 
+        // read from serial until found a ":"
         uint8_t ret = this->sendATCmdStream();
 
         ////
