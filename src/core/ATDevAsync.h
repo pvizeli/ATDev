@@ -30,7 +30,7 @@ class ATAsyncHandle
         /**
          *
          */
-        virtual void asyncCallBack() const = 0;
+        virtual void asyncCallBack() = 0;
 };
 
 /**

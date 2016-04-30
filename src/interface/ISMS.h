@@ -127,7 +127,7 @@ class ISMS
          * Get the next message index number from SIM storage.
          *
          * @param lastIdx           Last readed index number for next ID
-         *                          or 0 if you want read from first store
+         *                          or 0 if you want read from first message
          * @return                  Index nummber or ATDEV_SMS_NO_MSG
          */
         virtual uint16_t readNextIdxSMS(uint16_t lastIdx = 0) = 0;
