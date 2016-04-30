@@ -1,6 +1,11 @@
 
 #include "ATDev.h"
 
+// return value for function sendATCmd
+#define SENDATCMD_END(X) \
+    memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1); \
+    return X;
+
 
 ATDev::ATDev()
 {
@@ -37,7 +42,7 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, bool streamBuf, char* readBuf, uint16_t
 
     // UART initialize?
     if (m_hwSerial == NULL) {
-        return ATDEV_ERR_INITIALIZE;
+        SENDATCMD_END(ATDEV_ERR_INITIALIZE);
     }
 
     ////
@@ -98,8 +103,7 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, bool streamBuf, char* readBuf, uint16_t
 
             // buffer is full (not circle)
             if (!streamBuf && m_readPtr >= readBufSize) {
-                memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
-                return ATDEV_ERR_BUFFER_FULL;
+                SENDATCMD_END(ATDEV_ERR_BUFFER_FULL);
             }
 
             ////
@@ -119,22 +123,19 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, bool streamBuf, char* readBuf, uint16_t
             // if abrupt end of communication is set
             if (abruptEnd && m_readPtr >= endSize && 
                     strstr(&readBuf[m_readPtr - endSize], m_endBuffer) != 0) {
-                memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
-                return ATDEV_OK; 
+                SENDATCMD_END(ATDEV_OK);
             }
         }
 
         ////
         // check is it the end of AT Command in answer buffer
         if (m_readPtr >= endSize && strstr(readBuf, m_endBuffer) != 0) {
-            memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
-            return ATDEV_OK; 
+            SENDATCMD_END(ATDEV_OK);
         }
         // Error
         else if (m_readPtr >= ATDEV_END_ERROR_SIZE &&
                 strstr_P(readBuf, ATDEV_END_ERROR) != 0) {
-            memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
-            return ATDEV_ERR_ERROR_RECEIVED;
+            SENDATCMD_END(ATDEV_ERR_ERROR_RECEIVED);
         }
 
         // calc diff timeout
@@ -146,8 +147,7 @@ uint8_t ATDev::sendATCmd(bool abruptEnd, bool streamBuf, char* readBuf, uint16_t
 
     } while ((isTimeOut > millis() && !over) || over); // timeout
 
-    memset(m_endBuffer, 0x00, ATDEV_BUFF_END_SIZE +1);
-    return ATDEV_ERR_TIMEOUT;
+    SENDATCMD_END(ATDEV_ERR_TIMEOUT);
 }
 
 uint8_t ATDev::readLine(char* readBuf, uint16_t readBufSize)
